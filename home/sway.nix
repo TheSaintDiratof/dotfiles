@@ -1,15 +1,28 @@
 { colors, pkgs }:
+let
+  screenshot = pkgs.writeShellScriptBin "screenshot.sh" ''
+FILE=$HOME/.local/tmp/screenshots/$(date +%d%m%y_%H%M%S).png
+if [ "$1" == "-p" ]; then
+  AREA="$(${pkgs.slurp}/bin/slurp)"
+else
+  AREA="0,0 1920x1080"
+fi
+if ${pkgs.grim}/bin/grim -g "$AREA" "$FILE"; then
+  cat $FILE | ${pkgs.wl-clipboard}/bin/wl-copy --type image/png
+fi
+  '';
+in
 {
   enable = true;
   config = {
     assigns = {
-      "6: Steam" = [{class = "^Steam$";}];
+      "6: Steam" = [{class = "steam";}];
       "10: (null)" = [];
     };
     bindkeysToCode = true;
     bars = [];
     colors = {
-      background = "#${colors.bg}";
+      background = "#${colors.black}";
       focused = {
         border = "#${colors.brightBlue}";
         background = "#${colors.black}";
@@ -18,9 +31,9 @@
         childBorder = "#${colors.blue}";
       };
       focusedInactive = {
-        border = "#${colors.brightGray}";
+        border = "#${colors.gray}";
         background = "#${colors.brightRed}";
-        text = "#${colors.fg}";
+        text = "#${colors.brightGray}";
         indicator = "#${colors.brightBlack}";
         childBorder = "#${colors.black}";
       };
@@ -49,6 +62,7 @@
     floating = {
       border = 2;
       titlebar = false;
+      modifier = "Mod4";
     };
     window = {
       border = 1;
@@ -61,7 +75,7 @@
       pointer_accel = "-0.5";
     };
     output.HDMI-A-1 = {
-      bg = "~/.wallpapers/material3.png fill";
+      bg = "/etc/nixos/assets/material3.png fill";
       mode = "1920x1080@71.910Hz";
       adaptive_sync = "on";
     };
@@ -71,39 +85,39 @@
       term = "${pkgs.foot}/bin/foot";
       menu = ''${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font:size=15'\
         --nb '#${colors.black}' --fb '#${colors.black}' --nf '#${colors.brightGray}'\
-        --sb '#${colors.aqua}' --sf '#${colors.brightGray}' --hf '#${colors.brightGray}'\
+        --sb '#${colors.aqua}' --sf '#${colors.black}' --hf '#${colors.brightGray}'\
         --tf '#${colors.brightGray}' --tb '#${colors.blue}' -b'';
-      second_menu = "rofi -show drun -show icons";
+      second_menu = "${pkgs.rofi-wayland}/bin/rofi -show drun -show-icons";
       lock = "${pkgs.swaylock-effects}/bin/swaylock";
     in {
-      "${mod}+F2" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -1%";
-      "${mod}+F3" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +1%";
-      "${mod}+F4" = "exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle";
-      "${mod}+F5" = "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && notify-send 'microphone toggle'";
-      "${mod}+F6" = "exec playerctl previous";
-      "${mod}+F7" = "exec playerctl play-pause";
-      "${mod}+F8" = "exec playerctl next";
-      "Menu" = "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && notify-send 'microphone toggle'";
+      "${mod}+F2" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-";
+      "${mod}+F3" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%+";
+      "${mod}+F4" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+      "${mod}+F5" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+      "${mod}+F6" = "exec ${pkgs.playerctl}/bin/playerctl previous";
+      "${mod}+F7" = "exec ${pkgs.playerctl}/bin/playerctl play-pause";
+      "${mod}+F8" = "exec ${pkgs.playerctl}/bin/playerctl next";
+      "Menu" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
 
-      "Pause" = "exec ${lock}";
-      "${mod}+Shift+Pause" = "exec ${lock} && systemctl suspend";
+      "Pause" =              "exec ${lock}";
+      "${mod}+Shift+Pause" = "exec ${lock} & systemctl suspend";
 
-      "${mod}+Return" = "exec ${tmux_term}";
+      "${mod}+Return" =       "exec ${tmux_term}";
       "${mod}+Shift+Return" = "exec ${term}";
-      "${mod}+Shift+d" = "exec ${second_menu}";
-      "${mod}+d" = "exec ${menu}";
+      "${mod}+Shift+d" =  "exec ${second_menu}";
+      "${mod}+d" =        "exec ${menu}";
       "${mod}+Shift+q" = "kill";
       "${mod}+Shift+c" = "reload";
       "${mod}+Shift+e" = "exec swaymsg exit";
 
-      "${mod}+Left" = "focus left";
-      "${mod}+Down" = "focus down";
-      "${mod}+Up" = "focus up";
+      "${mod}+Left"  = "focus left";
+      "${mod}+Down"  = "focus down";
+      "${mod}+Up"    = "focus up";
       "${mod}+Right" = "focus right";
       
-      "${mod}+Shift+Left" = "move left";
-      "${mod}+Shift+Down" = "move down";
-      "${mod}+Shift+Up" = "move up";
+      "${mod}+Shift+Left"  = "move left";
+      "${mod}+Shift+Down"  = "move down";
+      "${mod}+Shift+Up"    = "move up";
       "${mod}+Shift+Right" = "move right";
       "${mod}+1" = "workspace number 1";
       "${mod}+2" = "workspace number 2";
@@ -140,20 +154,20 @@
 
       "${mod}+r" = "mode resize";
 
-      "${mod}+Print" = "exec grim - | wl-copy --type image/png";
-      "${mod}+grave" = "exec grim -g \"$(slurp)\" - | wl-copy --type image/png";
+      "Print" = "exec ${screenshot}/bin/screenshot.sh";
+      "${mod}+grave" = "exec ${screenshot}/bin/screenshot.sh -p";
 
     };
     modes = {
       resize = {
-        Down = "resize grown height 10px";
-        Left = "resize shrink width 10 px";
+        Down =  "resize grown height 10px";
+        Left =  "resize shrink width 10 px";
         Right = "resize grow width 10 px";
-        Up = "resize shrink height 10 px";
+        Up =    "resize shrink height 10 px";
         Escape = "mode default";
         Return = "mode default";
       };
     };
-    startup = [ {command = "swaykbdd";} ];
+    startup = [ {command = "${pkgs.swaykbdd}/bin/swaykbdd";} ];
   };
 }

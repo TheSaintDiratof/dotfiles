@@ -1,55 +1,18 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
-#todo
-#configure noise removal and rtp-sink in pipewire
-#set dvorak in tty an gdm
-#delete gdm and make script for login into sway from tty1
-#migrate to zsh
-#clean packages
-
 { config, pkgs, lib, ... }:
-
-
 let
-  unstable = import
-  (builtins.fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz)
+  unstable = 
+  import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz")
   { config = config.nixpkgs.config; };
-  nix-gaming = import (builtins.fetchTarball "https://github.com/fufexan/nix-gaming/archive/master.tar.gz");
-  dbus-sway-environment = pkgs.writeTextFile {
-    name = "dbus-sway-environment";
-    destination = "/bin/dbus-sway-environment";
-    executable = true;
-    text = ''
-systemctl --user import-environment XDG_SESSION_TYPE XDG_CURRENT_DESKTOP
-dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-systemctl --user stop pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
-systemctl --user start pipewire pipewire-pulse wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
-'';
-  };
-  configure-gtk = pkgs.writeTextFile {
-    name = "configure-gtk";
-    destination = "/bin/configure-gtk";
-    text = let
-      schema = pkgs.gsettings-desktop-schemas;
-      datadir = "${schema}/share/gsettings-schemas/{$schema.name}";
-    in ''
-export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-gnome_schema=org.gnome.desktop.interface
-gsettings set $gnome_schema gtk-theme 'Dracula'
-'';
-  };
+  nix-gaming = 
+  import (builtins.fetchTarball "https://github.com/fufexan/nix-gaming/archive/master.tar.gz");
 in
 {
   networking.hostId = "b97281ff";
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      #./network.nix
       (import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-23.11.tar.gz}/nixos")
       "${nix-gaming}/modules/pipewireLowLatency.nix"
-      #./pipewire.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -59,33 +22,35 @@ in
       efi.canTouchEfiVariables = true;
       efi.efiSysMountPoint = "/boot";
     };
-    #kernelParams = [ "radeon.si_support=1" "amdgpu.si_support=0" ];
     kernelPackages = pkgs.linuxKernel.packages.linux_rt_5_15; 
     supportedFilesystems = [ "zfs" ];
   };
 
   networking.hostName = "4eJIoBe4HoCTb"; # Define your hostname.
-  # Set your time zone.
   time.timeZone = "Asia/Yekaterinburg";
 
 
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
+    keyMap = "dvorak";
     font = "drdos8x16";
-    useXkbConfig = true; # use xkbOptions in tty.
   };
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  home-manager = { users.diratof = (import ./home.nix {inherit config pkgs lib unstable;}); };
+  home-manager.users.diratof = (import ./home.nix {inherit config pkgs lib unstable;});
   users.users.diratof = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "audio" "video" "input" "pipewire" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
-      thunderbird
       tmux 
       cmus
-      steam-run
+      xonotic
+      # desktop
       pavucontrol
-      htop
+      deluge
+      libreoffice-fresh
+      mpv
+      gimp
+      (pkgs.qt6Packages.callPackage ./packages/openmv.nix {})
     ];
     shell = "${pkgs.mksh}/bin/mksh";
   };
@@ -93,34 +58,7 @@ in
   environment.systemPackages = with pkgs; [
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-    nixos-option
-    mksh
-    git
-    steam
-    # sway
-    swaykbdd
-    sway
-    foot
-    dbus-sway-environment
-    configure-gtk
-    wayland
-    xdg-utils
-    glib
-    dracula-theme
-    gnome3.adwaita-icon-theme
-    swayidle
-    grim
-    slurp
-    wl-clipboard
-    bemenu
-    rofi
-    playerctl
-    pulseaudio
-    conky
-    deluge
-    libreoffice-fresh
-    # gayming
-    wineWowPackages.waylandFull
+    htop
   ];
   security.rtkit.enable = true;
   services = {
@@ -130,16 +68,13 @@ in
       pulse.enable = true;
       alsa.support32Bit = true;
       jack.enable = true;
-      lowLatency = {
-        enable = true;
-        quantum = 64;
-        rate = 48000;
-      };
     };
     dbus.enable = true;
-    openssh.enable = true;
     xserver = {
       enable = true;
+      layout = "us,ru";
+      xkbVariant = "dvorak,";
+      xkbOptions = "grp:win_space_toggle";
       displayManager.gdm = {
         enable = true;
         wayland = true;
@@ -147,8 +82,13 @@ in
       libinput.enable = true;
       videoDrivers = [ "amdgpu" ];
     };
-    flatpak.enable = true;
-    nfs.server.enable = true;
+    udev.extraRules = ''
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", \
+        MODE:="0666", \
+        SYMLINK+="stlinkv2_%n"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="abd1", \
+        MODE:="0666"
+    '';
   };
   xdg.portal = {
     enable = true;
@@ -161,29 +101,11 @@ in
       enable = true;
       wrapperFeatures.gtk = true;
     };
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-      configure = {
-        packages.myPlugins = with pkgs.vimPlugins; {
-          start = [
-            vim-nix
-            plenary-nvim
-            nvim-treesitter
-          ];
-        };
-        #opt.number = true;
-      };
-    };
     steam.enable = true;
   };
-  security.doas = {
-    enable = true;
-    extraRules = [{
-      groups = [ "wheel" ];
-      keepEnv = true;
-      noPass = true;
-    }];
+  security = {
+    doas.enable = false;
+    sudo.enable = false;
   };
   hardware = {
     opengl = {
@@ -192,8 +114,6 @@ in
       extraPackages = with pkgs; [
           amdvlk
       ];
-      # For 32 bit applications 
-      # Only available on unstable
       extraPackages32 = with pkgs; [
         driversi686Linux.amdvlk
       ];
@@ -207,26 +127,17 @@ in
     noto-fonts-emoji
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
   ];
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
   nixpkgs.config = { 
     allowUnfree = true;
     allowBroken = true;
-    #packageOverrides = pkgs: {
-    #  Xwayland = pkgs.Xwayland.override { version = "22.1.1"; };
-    #};
   };
-  #nixpkgs.overlays = [ (import ./overlay.nix ) ];
-  
+  zramSwap.enable = true;
+  virtualisation = {
+    podman = {
+      enable = true;
+      defaultNetwork.settings.dns_enabled = true;
+    };
+  };
 }
 

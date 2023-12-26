@@ -7,6 +7,7 @@
   mouse = true;
   newSession = true;
   prefix = "C-q";
+  terminal = "tmux-256color";
   baseIndex = 1;
   shell = ''${pkgs.mksh}/bin/mksh'';
   extraConfig = ''bind e split -hc "#{pane_current_path}"

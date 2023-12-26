@@ -1,17 +1,10 @@
 { config, pkgs, lib, unstable, ... }:
 #todo
-#css in waybar and rofi
-#check if home manager support cmus
 #migrate to zsh
+#rewrite waybar config
 #use smth like pywal to generate color scheme
-#rewrite nvim config
-#configure conky
-#choose torrent client
 let
   colors = {
-    bg = "2B2418";
-    fg = "D3C6AA";
-    accent = "C79032";
     ultrablack = "000000";
 
     brightBlack = "928374";
@@ -42,16 +35,15 @@ in {
     neovim = import ./home/neovim.nix {inherit pkgs;};
     #My DE
     foot = import ./home/foot.nix {inherit colors;};
-    rofi = import ./home/rofi.nix {inherit pkgs;};
+    rofi = import ./home/rofi.nix {inherit colors pkgs config;};
     tmux = import ./home/tmux.nix {inherit pkgs;};
-    waybar = import ./home/waybar.nix;
+    waybar = import ./home/waybar.nix {inherit colors pkgs;};
     swaylock = import ./home/swaylock.nix {inherit colors pkgs;};
     firefox.enable = true;
-    # htop.enable = true;
-    # mpv.enable = true;
   };
   services = {
     mako = import ./home/mako.nix {inherit colors;};
+    swayidle = import ./home/swayidle.nix {inherit pkgs;};
   };
   wayland = {
     windowManager.sway = import ./home/sway.nix {inherit colors pkgs;};

@@ -1,12 +1,11 @@
 { pkgs }:
 {
   enable = true;
-  withNodeJs = false;
+  withNodeJs = true;
   withRuby = false;
   withPython3 = false;
-  vimAlias = true;
+  vimAlias = false;
   viAlias = false;
-  coc.enable = true;
   extraConfig = ''set ts=2
 syntax on
 set number
@@ -23,14 +22,41 @@ map <Space>7 7gt
 map <Space>8 8gt
 map <Space>9 9gt
 map <Space>0 10gt
+map <F5> !./.build.sh
+
+" use <tab> to trigger completion and navigate to the next complete item
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
 '';
   plugins = with pkgs.vimPlugins; [
     vim-nix
     lightline-vim
-    fzf-vim
-    coc-nvim
     indent-blankline-nvim
-    nerdtree
     gruvbox
+    clangd_extensions-nvim
+    coc-nvim
   ];
+  coc = {
+    enable = false;
+    settings = {
+      languageserver = {
+        nix = {
+          command = "${pkgs.rnix-lsp}/bin/rnix-lsp";
+          filetypes = [ "nix" ];
+        };
+        clangd = {
+          command = "${pkgs.clang-tools}/bin/clangd";
+          rootPatterns = ["compile_flags.txt" "compile_commands.json"];
+          filetypes = ["c" "cc" "cpp" "c++" "objc" "objcpp"];
+        };
+      };
+    };
+  };
 }

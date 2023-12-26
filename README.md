@@ -1,2 +1,2 @@
 This is my dotfiles
-Screenshots will be later :)
+![image](assets/screenshot.png)

@@ -45,7 +45,7 @@
     layout-border-color = "#${colors.black}AA";
     layout-text-color = "#${colors.brightGray}FF";
 
-    image = "~/Pictures/wallpaper.png";
+    image = "/etc/nixos/assets/wallpaper.png";
 
   };
 }
