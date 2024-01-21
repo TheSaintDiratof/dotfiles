@@ -32,15 +32,15 @@ in
       };
       focusedInactive = {
         border = "#${colors.gray}";
-        background = "#${colors.brightRed}";
-        text = "#${colors.brightGray}";
+        background = "#${colors.brightBlack}";
+        text = "#${colors.black}";
         indicator = "#${colors.brightBlack}";
         childBorder = "#${colors.black}";
       };
        unfocused = {
-        border = "#${colors.brightGray}";
+        border = "#${colors.brightBlue}";
         background = "#${colors.gray}";
-        text = "#${colors.brightBlack}";
+        text = "#${colors.black}";
         indicator = "#${colors.black}";
         childBorder = "#${colors.gray}";
       };   
@@ -61,8 +61,9 @@ in
     };
     floating = {
       border = 2;
-      titlebar = false;
+      titlebar = true;
       modifier = "Mod4";
+      criteria = [ {class = ".gamescope-wrapped";} ];
     };
     window = {
       border = 1;
@@ -75,7 +76,7 @@ in
       pointer_accel = "-0.5";
     };
     output.HDMI-A-1 = {
-      bg = "/etc/nixos/assets/material3.png fill";
+      bg = "/etc/nixos/assets/wallpaper.png fill";
       mode = "1920x1080@71.910Hz";
       adaptive_sync = "on";
     };
@@ -86,18 +87,18 @@ in
       menu = ''${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font:size=15'\
         --nb '#${colors.black}' --fb '#${colors.black}' --nf '#${colors.brightGray}'\
         --sb '#${colors.aqua}' --sf '#${colors.black}' --hf '#${colors.brightGray}'\
-        --tf '#${colors.brightGray}' --tb '#${colors.blue}' -b'';
+        --tf '#${colors.brightGray}' --tb '#${colors.yellow}' -b'';
       second_menu = "${pkgs.rofi-wayland}/bin/rofi -show drun -show-icons";
       lock = "${pkgs.swaylock-effects}/bin/swaylock";
     in {
       "${mod}+F2" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%-";
       "${mod}+F3" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 1%+";
       "${mod}+F4" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-      "${mod}+F5" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+      "${mod}+F5" = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
       "${mod}+F6" = "exec ${pkgs.playerctl}/bin/playerctl previous";
       "${mod}+F7" = "exec ${pkgs.playerctl}/bin/playerctl play-pause";
       "${mod}+F8" = "exec ${pkgs.playerctl}/bin/playerctl next";
-      "Menu" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+      "Menu" = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
       "Pause" =              "exec ${lock}";
       "${mod}+Shift+Pause" = "exec ${lock} & systemctl suspend";

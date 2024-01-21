@@ -13,6 +13,7 @@ in
       ./hardware-configuration.nix
       (import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-23.11.tar.gz}/nixos")
       "${nix-gaming}/modules/pipewireLowLatency.nix"
+      ./wireguard.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -39,9 +40,10 @@ in
   home-manager.users.diratof = (import ./home.nix {inherit config pkgs lib unstable;});
   users.users.diratof = {
     isNormalUser = true;
-    extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" ];     
     packages = with pkgs; [
-      tmux 
+      tmux
+      bc
       cmus
       xonotic
       # desktop
@@ -59,6 +61,7 @@ in
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     htop
+    unzip
   ];
   security.rtkit.enable = true;
   services = {
@@ -88,6 +91,12 @@ in
         SYMLINK+="stlinkv2_%n"
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="abd1", \
         MODE:="0666"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="d00d", \
+        MODE:="0666"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="4ee7", \
+        MODE:="0666"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="2b0e", ATTRS{idProduct}=="171b", \
+        MODE:="0666"
     '';
   };
   xdg.portal = {
@@ -104,6 +113,14 @@ in
     steam.enable = true;
   };
   security = {
+    polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (subject.isInGroup("users") && (action.id == "org.freedesktop.systemd1.manage-units"))
+        {
+          return polkit.Result.YES;
+        }
+      })
+    '';
     doas.enable = false;
     sudo.enable = false;
   };
@@ -125,12 +142,15 @@ in
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
-    (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    (nerdfonts.override { fonts = [ "InconsolataGo" "FiraCode" "DroidSansMono" ]; })
   ];
   system.stateVersion = "23.11"; # Did you read the comment?
   nixpkgs.config = { 
     allowUnfree = true;
     allowBroken = true;
+    permittedInsecurePackages = [
+      "curl-impersonate-0.5.4"
+    ];
   };
   zramSwap.enable = true;
   virtualisation = {

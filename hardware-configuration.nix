@@ -28,16 +28,6 @@
       fsType = "xfs";
     };
 
-  fileSystems."/home/diratof/remote" =
-    { device = "pool0/diratof";
-      fsType = "zfs";
-    };
-
-  fileSystems."/home/zero" =
-    { device = "pool0/yaourt";
-      fsType = "zfs";
-    };
-
   swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

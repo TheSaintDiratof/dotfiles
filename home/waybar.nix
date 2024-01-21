@@ -7,10 +7,10 @@
       layer = "top";
       position = "top";
       output = [ "HDMI-A-1" ];
-      height = 20;
+      height = 32;
       modules-left = [ "custom/stub" "mpris" ];
-      modules-center = [ "" ];
-      modules-right = [ "pulseaudio" "tray" "idle_inhibitor" "clock" "custom/stub" ];
+      modules-center = [ ];
+      modules-right = [ "custom/vpn" "pulseaudio" "tray" "idle_inhibitor" "clock" "custom/stub" ];
       "mpris" = {
         format = "<b>{player} {status_icon}</b> {artist} <b>—</b> {title}";
         on-right-click = "shift";
@@ -23,8 +23,8 @@
       "idle_inhibitor" = {
         format = "{icon}";
         format-icons = {
-          activated = "";
-          deactivated = "";
+          activated = "A";
+          deactivated = "D";
         };
       };
       "tray" = {
@@ -58,6 +58,31 @@
         };
         on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
       };
+      "custom/vpn" = 
+        let vpn = pkgs.writeShellScriptBin "vpn.sh" ''
+          while [[ $# -gt 0 ]]; do
+            case $1 in -t|--toggle)
+              if ${pkgs.iproute2}/bin/ip l | ${pkgs.gnugrep}/bin/grep wg0 > /dev/null; then
+                 ${pkgs.systemd}/bin/systemctl stop wg-quick-wg0
+              else
+                 ${pkgs.systemd}/bin/systemctl start wg-quick-wg0
+              fi
+              shift
+              shift
+              ;;
+            esac
+          done
+          if ${pkgs.iproute2}/bin/ip l | ${pkgs.gnugrep}/bin/grep wg0 > /dev/null;  then
+            echo "VPN Activated"
+          else
+            echo "VPN Deactivated"
+          fi
+        '';
+        in { 
+          exec = "${vpn}/bin/vpn.sh";
+          on-click = "${vpn}/bin/vpn.sh -t";
+          interval = 1;
+      };
       "custom/stub" = {
         format = " ";
       };
@@ -67,7 +92,7 @@
       border: 1px solid transparent;
       border-radius: 0px;
       margin: 0px 0px;
-      font-family: "Nimbus Sans L Bold:style=bold", "Font Awesome 6 Free";
+      font-family: "InconsolataGo Nerd Font Mono:style=bold";
       font-size: 18px;
       min-height: 0px;
     }
@@ -132,6 +157,14 @@
       margin: 0px 5px;
       background-color: #${colors.brightYellow};
       color: #${colors.black};
+    }
+    #custom-vpn {
+      background-color: #${colors.yellow};
+      color: #${colors.black};
+      margin-left: 5px;
+      margin-right: 5px;
+      padding: 0px 5px;
+      border-radius: 5px;
     }
   '';
 }

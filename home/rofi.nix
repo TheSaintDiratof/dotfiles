@@ -19,7 +19,7 @@
       transparency = "real";
       border-color = mkLiteral "#${colors.yellow}";   
       border = mkLiteral "3px";
-      border-radius = mkLiteral "6px";
+      border-radius = mkLiteral "0px";
       spacing = 0;
       children = map mkLiteral [ "mainbox" ];
     };
@@ -32,7 +32,7 @@
       padding = mkLiteral "11px";
       border = mkLiteral "3px 3px 3px 3px";
       border-color = mkLiteral "#${colors.gray}";
-      border-radius = mkLiteral "6px 6px 0px 0px";
+      border-radius = mkLiteral "0px";
     };
     "message" = {
       padding = 0;
@@ -64,7 +64,7 @@
       lines = 12;
       columns = 1;
       border = mkLiteral "0px 3px 3px 3px"; 
-      border-radius = mkLiteral "0px 0px 6px 6px";
+      border-radius = mkLiteral "0px";
       border-color = mkLiteral "#${colors.gray}";
       dynamic = false;
     };

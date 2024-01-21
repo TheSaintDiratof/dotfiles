@@ -30,6 +30,7 @@ in {
   home.stateVersion = "23.11";   
   nix.settings = {
   };
+  nixpkgs.config.permittedInsecurePackages = [ "curl-impersonate-0.5.4" ];
   programs = {
     obs-studio = import ./home/obs-studio.nix {inherit pkgs;};
     neovim = import ./home/neovim.nix {inherit pkgs;};
@@ -44,6 +45,7 @@ in {
   services = {
     mako = import ./home/mako.nix {inherit colors;};
     swayidle = import ./home/swayidle.nix {inherit pkgs;};
+    playerctld.enable = true;
   };
   wayland = {
     windowManager.sway = import ./home/sway.nix {inherit colors pkgs;};

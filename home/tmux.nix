@@ -48,7 +48,7 @@ set -g status-style bg=default
 set -g status-fg colour7
 set -g status-interval 1
 set -g status-right-length 100
-
+set -g status-right '#[bg=colour8,fg=terminal]#{?client_prefix, prefix ,}'
 set -g set-titles on
 set -g set-titles-string "#W"'';
 }
