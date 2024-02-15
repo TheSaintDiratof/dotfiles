@@ -21,6 +21,11 @@ in
     };
     bindkeysToCode = true;
     bars = [];
+    fonts ={
+      names = [ "FiraCode Nerd Font" "InconsolataGo Nerd Font Mono" ];
+      #style = "Bold Semi-Condensed";
+      size = 10.0;
+    };
     colors = {
       background = "#${colors.black}";
       focused = {
@@ -84,7 +89,7 @@ in
       mod = "Mod4";
       tmux_term = "${pkgs.foot}/bin/footclient -e ${pkgs.tmux}/bin/tmux a";
       term = "${pkgs.foot}/bin/foot";
-      menu = ''${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font:size=15'\
+      menu = ''${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font:size=13'\
         --nb '#${colors.black}' --fb '#${colors.black}' --nf '#${colors.brightGray}'\
         --sb '#${colors.aqua}' --sf '#${colors.black}' --hf '#${colors.brightGray}'\
         --tf '#${colors.brightGray}' --tb '#${colors.yellow}' -b'';

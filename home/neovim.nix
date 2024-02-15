@@ -25,6 +25,9 @@
     map <Space>9 9gt
     map <Space>0 10gt
     map ф a
+    map к p
+    map е y
+    map ю v
     map <F5> !./.build.sh
     
     " use <tab> to trigger completion and navigate to the next complete item
@@ -44,6 +47,7 @@
     indent-blankline-nvim
     gruvbox
     clangd_extensions-nvim
+    typst-vim
     coc-nvim
   ];
   coc = {

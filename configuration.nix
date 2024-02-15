@@ -1,13 +1,36 @@
 { config, pkgs, lib, ... }:
 let
+  colors = import ./colors.nix;
+
+  Wayland = false;
+  Xorg = true;
+
   unstable = 
   import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz")
   { config = config.nixpkgs.config; };
   nix-gaming = 
   import (builtins.fetchTarball "https://github.com/fufexan/nix-gaming/archive/master.tar.gz");
+
+  myst = if Xorg then (import ./xorg/st.nix { inherit pkgs colors; }).myst else {};
+  dwm = if Xorg then { enable = true; package = (import ./xorg/dwm.nix { inherit pkgs colors myst; }).mydwm; } else {};
+  xorgPackages = if Xorg then [ pkgs.feh pkgs.kbdd ] else [];
+  xdgPortal = if Wayland then {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
+  } else {};
+  sway = if Wayland then {
+    enable = true;
+    wrapperFeatures.gtk = true;
+  } else {};
+
+  videoDrivers = [ "amdgpu" ];
+  vulkanLoader = pkgs.amdvlk;
+  vulkanLoader32 = pkgs.driversi686Linux.amdvlk;
 in
 {
   networking.hostId = "b97281ff";
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -23,7 +46,7 @@ in
       efi.canTouchEfiVariables = true;
       efi.efiSysMountPoint = "/boot";
     };
-    kernelPackages = pkgs.linuxKernel.packages.linux_rt_5_15; 
+    kernelPackages = pkgs.linuxKernel.packages.linux_zen; 
     supportedFilesystems = [ "zfs" ];
   };
 
@@ -37,14 +60,15 @@ in
     font = "drdos8x16";
   };
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  home-manager.users.diratof = (import ./home.nix {inherit config pkgs lib unstable;});
+  home-manager.users.diratof = (import ./home.nix {inherit config pkgs lib unstable colors Wayland myst;});
   users.users.diratof = {
     isNormalUser = true;
-    extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" ];     
+    extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" "tty" ];     
     packages = with pkgs; [
       tmux
       bc
       cmus
+      git
       xonotic
       # desktop
       pavucontrol
@@ -53,8 +77,9 @@ in
       mpv
       gimp
       (pkgs.qt6Packages.callPackage ./packages/openmv.nix {})
-    ];
-    shell = "${pkgs.mksh}/bin/mksh";
+      # DE
+    ] ++ xorgPackages;
+    shell = "${pkgs.tcsh}/bin/tcsh";
   };
 
   environment.systemPackages = with pkgs; [
@@ -78,12 +103,17 @@ in
       layout = "us,ru";
       xkbVariant = "dvorak,";
       xkbOptions = "grp:win_space_toggle";
-      displayManager.gdm = {
+      displayManager.lightdm = {
         enable = true;
-        wayland = true;
+        greeter.enable = true;
+        background = /etc/nixos/assets/wallpaper.png;
       };
-      libinput.enable = true;
-      videoDrivers = [ "amdgpu" ];
+      windowManager.dwm = dwm;
+      libinput = {
+        enable = true;
+        mouse.accelSpeed = "-1";
+      };
+      videoDrivers = videoDrivers;
     };
     udev.extraRules = ''
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", \
@@ -95,21 +125,15 @@ in
         MODE:="0666"
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="4ee7", \
         MODE:="0666"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="4ee4", \
+        MODE:="0666"
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="2b0e", ATTRS{idProduct}=="171b", \
         MODE:="0666"
     '';
   };
-  xdg.portal = {
-    enable = true;
-    wlr.enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
-  };
-
+  xdg.portal = xdgPortal; 
   programs = {
-    sway = {
-      enable = true;
-      wrapperFeatures.gtk = true;
-    };
+    sway = sway;
     steam.enable = true;
   };
   security = {
@@ -129,10 +153,10 @@ in
       driSupport = true;
       driSupport32Bit = true;
       extraPackages = with pkgs; [
-          amdvlk
+        vulkanLoader
       ];
       extraPackages32 = with pkgs; [
-        driversi686Linux.amdvlk
+        vulkanLoader32
       ];
     };
     bluetooth.enable = true;
@@ -142,7 +166,9 @@ in
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
-    (nerdfonts.override { fonts = [ "InconsolataGo" "FiraCode" "DroidSansMono" ]; })
+    corefonts
+    terminus_font
+    (nerdfonts.override { fonts = [ "InconsolataGo" "FiraCode" "DroidSansMono" "Terminus" ]; })
   ];
   system.stateVersion = "23.11"; # Did you read the comment?
   nixpkgs.config = { 
@@ -152,6 +178,7 @@ in
       "curl-impersonate-0.5.4"
     ];
   };
+  nix.settings.sandbox = true;
   zramSwap.enable = true;
   virtualisation = {
     podman = {

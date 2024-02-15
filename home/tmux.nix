@@ -9,7 +9,7 @@
   prefix = "C-q";
   terminal = "tmux-256color";
   baseIndex = 1;
-  shell = ''${pkgs.mksh}/bin/mksh'';
+  shell = ''${pkgs.tcsh}/bin/tcsh'';
   extraConfig = ''bind e split -hc "#{pane_current_path}"
 bind s split -c "#{pane_current_path}"
 bind q kill-pane

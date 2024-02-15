@@ -1,8 +1,13 @@
-{ colors, pkgs, config }:
-{
+{ colors, pkgs, config, Wayland, myst }:
+let 
+  rofi-package = if Wayland
+  then pkgs.rofi-wayland else pkgs.rofi;
+  terminal = if Wayland
+  then "${pkgs.foot}/bin/foot" else "${myst}/bin/st";
+in {
   enable = true;
-  package = pkgs.rofi-wayland;
-  terminal = "${pkgs.foot}/bin/footclient";
+  package = rofi-package;
+  terminal = terminal;
   theme = let
     inherit (config.home-manager.users.diratof.lib.formats.rasi) mkLiteral;
   in{
