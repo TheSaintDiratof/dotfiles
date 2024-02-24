@@ -1,15 +1,16 @@
-{ config, pkgs, lib, colors, Wayland, myst, ... }:
-let 
-  swayidle = if Wayland 
+{ config, pkgs, lib, colors, myst, ... }:
+let
+  settings = import ./settings.nix;
+  swayidle = if settings.Wayland 
   then (import ./home/swayidle.nix { inherit pkgs; })
   else {};
-  waybar = if Wayland
+  waybar = if settings.Wayland
   then import ./home/waybar.nix { inherit colors pkgs; }  else {};
-  swaylock = if Wayland
+  swaylock = if settings.Wayland
   then import ./home/swaylock.nix { inherit colors pkgs; }  else {};
-  foot = if Wayland
+  foot = if settings.Wayland
   then import ./home/foot.nix { inherit colors; }  else {};
-  sway = if Wayland
+  sway = if settings.Wayland
   then import ./home/sway.nix { inherit colors pkgs; }  else {};
 
 in { 
@@ -28,7 +29,7 @@ in {
       foot = foot;
       
       tmux = import ./home/tmux.nix {inherit pkgs;};
-      rofi = import ./home/rofi.nix {inherit colors pkgs config Wayland myst;};
+      rofi = import ./home/rofi.nix {inherit colors pkgs config settings myst;};
       firefox.enable = true;
     };
     services = {

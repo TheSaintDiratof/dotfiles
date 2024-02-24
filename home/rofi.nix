@@ -1,8 +1,6 @@
-{ colors, pkgs, config, Wayland, myst }:
+{ colors, pkgs, config, settings, myst }:
 let 
-  rofi-package = if Wayland
-  then pkgs.rofi-wayland else pkgs.rofi;
-  terminal = if Wayland
+  terminal = if settings.Wayland
   then "${pkgs.foot}/bin/foot" else "${myst}/bin/st";
 in {
   enable = true;

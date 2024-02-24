@@ -1,25 +1,18 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, settings, ... }:
 let
   colors = import ./colors.nix;
+  settings = import ./settings.nix;
 
-  #Wayland = false;
-  #Xorg = true;
 
-  #unstable = 
-  #import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz")
-  #{ config = config.nixpkgs.config; };
-  #nix-gaming = 
-  #import (builtins.fetchTarball "https://github.com/fufexan/nix-gaming/archive/master.tar.gz");
-
-  myst = if Xorg then (import ./xorg/st.nix { inherit pkgs colors; }).myst else {};
-  dwm = if Xorg then { enable = true; package = (import ./xorg/dwm.nix { inherit pkgs colors myst; }).mydwm; } else {};
-  xorgPackages = if Xorg then [ pkgs.feh pkgs.kbdd ] else [];
-  xdgPortal = if Wayland then {
+  myst = if settings.Xorg then (import ./xorg/st.nix { inherit pkgs colors; }).myst else {};
+  dwm = if settings.Xorg then { enable = true; package = (import ./xorg/dwm.nix { inherit pkgs colors myst; }).mydwm; } else {};
+  xorgPackages = if settings.Xorg then [ pkgs.feh pkgs.kbdd ] else [];
+  xdgPortal = if settings.Wayland then {
     enable = true;
     wlr.enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
   } else {};
-  sway = if Wayland then {
+  sway = if settings.Wayland then {
     enable = true;
     wrapperFeatures.gtk = true;
   } else {};

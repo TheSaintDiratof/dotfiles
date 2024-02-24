@@ -4,7 +4,7 @@
     # configuration.nix. You can also use latter versions if you wish to
     # upgrade.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
-    nix-gaming.url = "github.com:fufexan/nix-gaming/master";
+    nix-gaming.url = "github:fufexan/nix-gaming";
     home-manager = {
       url = "github:nix-community/home-manager/release-23.11";
       # The `follows` keyword in inputs is used for inheritance.
@@ -15,14 +15,21 @@
     };
   };
   outputs = inputs@{ self, nixpkgs, ... }: {
-    # NOTE: 'nixos' is the default hostname set by the installer
     nixosConfigurations."4eJIoBe4HoCTb" = nixpkgs.lib.nixosSystem {
-      # NOTE: Change this to aarch64-linux if you are on ARM
       system = "x86_64-linux";
       modules = [
-        ./settings.nix
         ./configuration.nix 
+      ];
+    };
+    homeConfigurations."4eJIoBe4HoCTb" = inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+        config.allowUnfree = true;
+      };
+      extraSpecialArgs = {inherit inputs;};
+      modules = [
         ./home.nix
+        inputs.nix-gaming.nixosModules.pipewireLowLatency
       ];
     };
   };
