@@ -1,4 +1,4 @@
-{ config, pkgs, lib, unstable, colors, Wayland, myst, ... }:
+{ config, pkgs, lib, colors, Wayland, myst, ... }:
 let 
   swayidle = if Wayland 
   then (import ./home/swayidle.nix { inherit pkgs; })
@@ -12,30 +12,32 @@ let
   sway = if Wayland
   then import ./home/sway.nix { inherit colors pkgs; }  else {};
 
-in {
-  home.sessionPath = [ "$HOME/.local/bin" ];
-  home.stateVersion = "24.05";   
-  nix.settings = {
-  };
-  nixpkgs.config.permittedInsecurePackages = [ "curl-impersonate-0.5.4" ];
-  programs = {
-    obs-studio = import ./home/obs-studio.nix {inherit pkgs;};
-    neovim = import ./home/neovim.nix {inherit pkgs;};
-    #My DE
-    waybar = waybar;
-    swaylock = swaylock;
-    foot = foot;
-    
-    tmux = import ./home/tmux.nix {inherit pkgs;};
-    rofi = import ./home/rofi.nix {inherit colors pkgs config Wayland myst;};
-    firefox.enable = true;
-  };
-  services = {
-    swayidle = swayidle;
-    dunst = import ./home/dunst.nix {inherit colors;};
-    playerctld.enable = true;
-  };
-  wayland = {
-    windowManager.sway = sway;
+in { 
+  home-manager.users.diratof = {
+    home.sessionPath = [ "$HOME/.local/bin" ];
+    home.stateVersion = "23.11";   
+    nix.settings = {
+    };
+    nixpkgs.config.permittedInsecurePackages = [ "curl-impersonate-0.5.4" ];
+    programs = {
+      obs-studio = import ./home/obs-studio.nix {inherit pkgs;};
+      neovim = import ./home/neovim.nix {inherit pkgs;};
+      #My DE
+      waybar = waybar;
+      swaylock = swaylock;
+      foot = foot;
+      
+      tmux = import ./home/tmux.nix {inherit pkgs;};
+      rofi = import ./home/rofi.nix {inherit colors pkgs config Wayland myst;};
+      firefox.enable = true;
+    };
+    services = {
+      swayidle = swayidle;
+      dunst = import ./home/dunst.nix {inherit colors;};
+      playerctld.enable = true;
+    };
+    wayland = {
+      windowManager.sway = sway;
+    };
   };
 }

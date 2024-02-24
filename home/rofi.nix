@@ -8,9 +8,10 @@ in {
   enable = true;
   package = rofi-package;
   terminal = terminal;
-  theme = let
-    inherit (config.home-manager.users.diratof.lib.formats.rasi) mkLiteral;
-  in{
+  theme = #let
+    #inherit (config.home-manager.users.diratof.lib.formats.rasi) mkLiteral;
+  #in{
+    ''
     "*" = {
       background-color = mkLiteral "#${colors.black}";
     };
@@ -107,5 +108,5 @@ in {
       background = mkLiteral "#${colors.black}";
       foreground = mkLiteral "#${colors.yellow}";
     };
-  };
+  };'';
 }

@@ -1,0 +1,4 @@
+{
+  Xorg = true;
+  Wayland = false;
+}

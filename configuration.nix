@@ -2,14 +2,14 @@
 let
   colors = import ./colors.nix;
 
-  Wayland = false;
-  Xorg = true;
+  #Wayland = false;
+  #Xorg = true;
 
-  unstable = 
-  import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz")
-  { config = config.nixpkgs.config; };
-  nix-gaming = 
-  import (builtins.fetchTarball "https://github.com/fufexan/nix-gaming/archive/master.tar.gz");
+  #unstable = 
+  #import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz")
+  #{ config = config.nixpkgs.config; };
+  #nix-gaming = 
+  #import (builtins.fetchTarball "https://github.com/fufexan/nix-gaming/archive/master.tar.gz");
 
   myst = if Xorg then (import ./xorg/st.nix { inherit pkgs colors; }).myst else {};
   dwm = if Xorg then { enable = true; package = (import ./xorg/dwm.nix { inherit pkgs colors myst; }).mydwm; } else {};
@@ -34,8 +34,8 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos")
-      "${nix-gaming}/modules/pipewireLowLatency.nix"
+      #(import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos")
+      #"${nix-gaming}/modules/pipewireLowLatency.nix"
       ./wireguard.nix
     ];
 
@@ -60,7 +60,7 @@ in
     font = "drdos8x16";
   };
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  home-manager.users.diratof = (import ./home.nix {inherit config pkgs lib unstable colors Wayland myst;});
+  #home-manager.users.diratof = (import ./home.nix {inherit config pkgs lib colors Wayland myst;});
   users.users.diratof = {
     isNormalUser = true;
     extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" "tty" ];     
@@ -68,7 +68,6 @@ in
       tmux
       bc
       cmus
-      git
       xonotic
       # desktop
       pavucontrol
@@ -87,6 +86,7 @@ in
     wget
     htop
     unzip
+    git
   ];
   security.rtkit.enable = true;
   services = {
