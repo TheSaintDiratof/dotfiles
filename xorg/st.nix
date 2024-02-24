@@ -4,11 +4,11 @@
     patches = [
       (pkgs.fetchpatch {
         url = "http://st.suckless.org/patches/alpha/st-alpha-20220206-0.8.5.diff";
-        sha256 = "10gvwnpbjw49212k25pddji08f4flal0g9rkwpvkay56w8y81r22";
+        sha256 = "sha256-01/KBNbBKcFcfbcpMnev/LCzHpON3selAYNo8NUPbF4=";
       })
       (pkgs.fetchpatch {
         url = "http://st.suckless.org/patches/anysize/st-expected-anysize-0.9.diff";
-        sha256 = "04gvkf80lhaiwyv3m7fdkf81msf8al1kfb7inx1bf02ygx9152v2";
+        sha256 = "sha256-q21HEZoTiVb+IIpjqYPa9idVyYlbG9RF3LD6yKW4muo=";
       })
     ];
     conf = ''

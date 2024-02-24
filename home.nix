@@ -14,7 +14,7 @@ let
 
 in {
   home.sessionPath = [ "$HOME/.local/bin" ];
-  home.stateVersion = "23.11";   
+  home.stateVersion = "24.05";   
   nix.settings = {
   };
   nixpkgs.config.permittedInsecurePackages = [ "curl-impersonate-0.5.4" ];

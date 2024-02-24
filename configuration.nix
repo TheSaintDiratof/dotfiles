@@ -34,7 +34,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/release-23.11.tar.gz}/nixos")
+      (import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos")
       "${nix-gaming}/modules/pipewireLowLatency.nix"
       ./wireguard.nix
     ];
@@ -46,7 +46,7 @@ in
       efi.canTouchEfiVariables = true;
       efi.efiSysMountPoint = "/boot";
     };
-    kernelPackages = pkgs.linuxKernel.packages.linux_zen; 
+    kernelPackages = pkgs.linuxKernel.packages.linux_rt_5_15; 
     supportedFilesystems = [ "zfs" ];
   };
 
@@ -76,7 +76,7 @@ in
       libreoffice-fresh
       mpv
       gimp
-      (pkgs.qt6Packages.callPackage ./packages/openmv.nix {})
+      #(pkgs.qt6Packages.callPackage ./packages/openmv.nix {})
       # DE
     ] ++ xorgPackages;
     shell = "${pkgs.tcsh}/bin/tcsh";
@@ -100,9 +100,11 @@ in
     dbus.enable = true;
     xserver = {
       enable = true;
-      layout = "us,ru";
-      xkbVariant = "dvorak,";
-      xkbOptions = "grp:win_space_toggle";
+      xkb = {
+        layout = "us,ru";
+        variant = "dvorak,";
+        options = "grp:win_space_toggle";
+      };
       displayManager.lightdm = {
         enable = true;
         greeter.enable = true;
@@ -114,6 +116,10 @@ in
         mouse.accelSpeed = "-1";
       };
       videoDrivers = videoDrivers;
+    };
+    printing = {
+      enable = true;
+      drivers = [ pkgs.hplip ];
     };
     udev.extraRules = ''
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", \
@@ -178,7 +184,10 @@ in
       "curl-impersonate-0.5.4"
     ];
   };
-  nix.settings.sandbox = true;
+  nix.settings = {
+    sandbox = true;
+    experimental-features = [ "nix-command" "flakes" ];
+  };
   zramSwap.enable = true;
   virtualisation = {
     podman = {
