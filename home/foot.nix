@@ -4,10 +4,10 @@
   server.enable = true;
   settings = {
     main = {
-      font = "FiraCode Nerd Font:size=13";
+      font = "Terminus:size=14";
     };
     colors = {
-      alpha = 0.9;
+      alpha = 1;
       background = "${settings.colors.black}";
       foreground = "${settings.colors.brightGray}";
       regular0 = "${settings.colors.black}";

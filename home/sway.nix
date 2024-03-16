@@ -87,12 +87,12 @@ in
     };
     keybindings = let
       mod = "Mod4";
-      tmux_term = "${settings.termital} -e ${pkgs.tmux}/bin/tmux a";
+      tmux_term = "${settings.terminal} -e ${pkgs.tmux}/bin/tmux a";
       term = "${settings.terminal}";
       menu = ''${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font:size=13'\
-        --nb '#${settings.colors.black}' --fb '#${colors.black}' --nf '#${colors.brightGray}'\
-        --sb '#${settings.colors.aqua}' --sf '#${colors.black}' --hf '#${colors.brightGray}'\
-        --tf '#${settings.colors.brightGray}' --tb '#${colors.yellow}' -b'';
+        --nb '#${settings.colors.black}' --fb '#${settings.colors.black}' --nf '#${settings.colors.brightGray}'\
+        --sb '#${settings.colors.aqua}' --sf '#${settings.colors.black}' --hf '#${settings.colors.brightGray}'\
+        --tf '#${settings.colors.brightGray}' --tb '#${settings.colors.yellow}' -b'';
       second_menu = "${pkgs.rofi-wayland}/bin/rofi -show drun -show-icons";
       lock = "${pkgs.swaylock-effects}/bin/swaylock";
     in {
