@@ -1,4 +1,4 @@
-{ colors, pkgs }:
+{ pkgs, settings }:
 let
   screenshot = pkgs.writeShellScriptBin "screenshot.sh" ''
 FILE=$HOME/.local/tmp/screenshots/$(date +%d%m%y_%H%M%S).png
@@ -27,41 +27,41 @@ in
       size = 10.0;
     };
     colors = {
-      background = "#${colors.black}";
+      background = "#${settings.colors.black}";
       focused = {
-        border = "#${colors.brightBlue}";
-        background = "#${colors.black}";
-        text = "#${colors.brightGray}";
-        indicator = "#${colors.aqua}";
-        childBorder = "#${colors.blue}";
+        border = "#${settings.colors.brightBlue}";
+        background = "#${settings.colors.black}";
+        text = "#${settings.colors.brightGray}";
+        indicator = "#${settings.colors.aqua}";
+        childBorder = "#${settings.colors.blue}";
       };
       focusedInactive = {
-        border = "#${colors.gray}";
-        background = "#${colors.brightBlack}";
-        text = "#${colors.black}";
-        indicator = "#${colors.brightBlack}";
-        childBorder = "#${colors.black}";
+        border = "#${settings.colors.gray}";
+        background = "#${settings.colors.brightBlack}";
+        text = "#${settings.colors.black}";
+        indicator = "#${settings.colors.brightBlack}";
+        childBorder = "#${settings.colors.black}";
       };
        unfocused = {
-        border = "#${colors.brightBlue}";
-        background = "#${colors.gray}";
-        text = "#${colors.black}";
-        indicator = "#${colors.black}";
-        childBorder = "#${colors.gray}";
+        border = "#${settings.colors.brightBlue}";
+        background = "#${settings.colors.gray}";
+        text = "#${settings.colors.black}";
+        indicator = "#${settings.colors.black}";
+        childBorder = "#${settings.colors.gray}";
       };   
       urgent = {
-        border = "#${colors.black}";
-        background = "#${colors.red}";
-        text = "#${colors.brightGray}";
-        indicator = "#${colors.red}";
-        childBorder = "#${colors.red}";
+        border = "#${settings.colors.black}";
+        background = "#${settings.colors.red}";
+        text = "#${settings.colors.brightGray}";
+        indicator = "#${settings.colors.red}";
+        childBorder = "#${settings.colors.red}";
       };
       placeholder = {
-        border = "#${colors.ultrablack}";
-        background = "#${colors.black}";
-        text = "#${colors.brightGray}";
-        indicator = "#${colors.ultrablack}";
-        childBorder = "#${colors.black}";
+        border = "#${settings.colors.ultrablack}";
+        background = "#${settings.colors.black}";
+        text = "#${settings.colors.brightGray}";
+        indicator = "#${settings.colors.ultrablack}";
+        childBorder = "#${settings.colors.black}";
       };
     };
     floating = {
@@ -87,12 +87,12 @@ in
     };
     keybindings = let
       mod = "Mod4";
-      tmux_term = "${pkgs.foot}/bin/footclient -e ${pkgs.tmux}/bin/tmux a";
-      term = "${pkgs.foot}/bin/foot";
+      tmux_term = "${settings.termital} -e ${pkgs.tmux}/bin/tmux a";
+      term = "${settings.terminal}";
       menu = ''${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font:size=13'\
-        --nb '#${colors.black}' --fb '#${colors.black}' --nf '#${colors.brightGray}'\
-        --sb '#${colors.aqua}' --sf '#${colors.black}' --hf '#${colors.brightGray}'\
-        --tf '#${colors.brightGray}' --tb '#${colors.yellow}' -b'';
+        --nb '#${settings.colors.black}' --fb '#${colors.black}' --nf '#${colors.brightGray}'\
+        --sb '#${settings.colors.aqua}' --sf '#${colors.black}' --hf '#${colors.brightGray}'\
+        --tf '#${settings.colors.brightGray}' --tb '#${colors.yellow}' -b'';
       second_menu = "${pkgs.rofi-wayland}/bin/rofi -show drun -show-icons";
       lock = "${pkgs.swaylock-effects}/bin/swaylock";
     in {

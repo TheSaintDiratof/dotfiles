@@ -1,4 +1,4 @@
-{ pkgs, colors, myst }: let 
+{ pkgs, settings }: let 
   i3lock = pkgs.writeShellScriptBin "i3lock.sh" ''
     ${pkgs.i3lock-color}/bin/i3lock -e -i /etc/nixos/assets/wallpaper.png -F --keylayout 2\
            --pass-media-keys --pass-volume-keys\
@@ -34,11 +34,11 @@ in {
       static const int topbar             = 1;        /* 0 means bottom bar */
       static const char *fonts[]          = { "Terminus:size=12:style=Bold" };
       static const char dmenufont[]       = "Terminus:size=12:style=Bold";
-      static const char col_bg[]          = "#${colors.black}";
-      static const char col_fg[]          = "#${colors.brightGray}";
-      static const char col_gray[]        = "#${colors.gray}";
-      static const char col_black[]       = "#${colors.ultrablack}";
-      static const char col_white[]       = "#${colors.brightGray}";
+      static const char col_bg[]          = "#${settings.colors.black}";
+      static const char col_fg[]          = "#${settings.colors.brightGray}";
+      static const char col_gray[]        = "#${settings.colors.gray}";
+      static const char col_black[]       = "#${settings.colors.ultrablack}";
+      static const char col_white[]       = "#${settings.colors.brightGray}";
       static const char *colors[][3]      = {
       	/*               fg         bg         border   */
       	[SchemeNorm] = { col_fg, col_bg, col_gray },
@@ -86,8 +86,8 @@ in {
       /* commands */
       static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
       static const char *dmenucmd[] = { "${pkgs.dmenu}/bin/dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_bg, "-nf", col_fg, "-sb", col_white, "-sf", col_black, NULL };
-      static const char *termcmd[]  = { "${myst}/bin/st", NULL };
-      static const char *tmuxtermcmd[] = {"${myst}/bin/st", "-e", "${pkgs.tmux}/bin/tmux", "a", NULL};
+      static const char *termcmd[]  = { "${settings.terminal}", NULL };
+      static const char *tmuxtermcmd[] = {"${settings.terminal}", "-e", "${pkgs.tmux}/bin/tmux", "a", NULL};
       static const char *rofi[] = {"${pkgs.rofi}/bin/rofi", "-show", "drun", NULL};
       static const char *lock[] = {"${i3lock}/bin/i3lock.sh", NULL};
       static const char *suspend[] = {"${i3lock}/bin/i3lock.sh", "-s", NULL};

@@ -1,17 +1,14 @@
-{ colors, pkgs, config, settings, myst }:
-let 
-  terminal = if settings.Wayland
-  then "${pkgs.foot}/bin/foot" else "${myst}/bin/st";
-in {
+{ pkgs, config, settings }:
+{
   enable = true;
-  package = rofi-package;
-  terminal = terminal;
+  package = pkgs.rofi-wayland;
+  terminal = settings.terminal;
   theme = #let
     #inherit (config.home-manager.users.diratof.lib.formats.rasi) mkLiteral;
   #in{
     ''
     "*" = {
-      background-color = mkLiteral "#${colors.black}";
+      background-color = mkLiteral "#${settings.colors.black}";
     };
     "window" = {
       width = 700;
@@ -21,7 +18,7 @@ in {
       location = mkLiteral "center";
       anchor = mkLiteral "center";
       transparency = "real";
-      border-color = mkLiteral "#${colors.yellow}";   
+      border-color = mkLiteral "#${settings.colors.yellow}";   
       border = mkLiteral "3px";
       border-radius = mkLiteral "0px";
       spacing = 0;
@@ -32,15 +29,15 @@ in {
       children = map mkLiteral [ "inputbar" "message" "listview" ];
     };
     "inputbar" = {
-      color = mkLiteral "#${colors.brightGray}";
+      color = mkLiteral "#${settings.colors.brightGray}";
       padding = mkLiteral "11px";
       border = mkLiteral "3px 3px 3px 3px";
-      border-color = mkLiteral "#${colors.gray}";
+      border-color = mkLiteral "#${settings.colors.gray}";
       border-radius = mkLiteral "0px";
     };
     "message" = {
       padding = 0;
-      border-color = mkLiteral "#${colors.yellow}";
+      border-color = mkLiteral "#${settings.colors.yellow}";
       border = mkLiteral "0px 1px 1px 1px";
     };
 
@@ -69,13 +66,13 @@ in {
       columns = 1;
       border = mkLiteral "0px 3px 3px 3px"; 
       border-radius = mkLiteral "0px";
-      border-color = mkLiteral "#${colors.gray}";
+      border-color = mkLiteral "#${settings.colors.gray}";
       dynamic = false;
     };
     "element" = {
       padding = mkLiteral "2px";
       vertical-align = 1;
-      color = mkLiteral "#${colors.brightGray}";
+      color = mkLiteral "#${settings.colors.brightGray}";
       font = mkLiteral "inherit";
     };
 
@@ -85,13 +82,13 @@ in {
     };
   
     "element selected.normal" = {
-      color = mkLiteral "#${colors.black}";
-      background-color = mkLiteral "#${colors.yellow}";
+      color = mkLiteral "#${settings.colors.black}";
+      background-color = mkLiteral "#${settings.colors.yellow}";
     };
   
     "element normal active" = {
-      background-color = mkLiteral "#${colors.brightBlack}";
-      color = mkLiteral "#${colors.yellow}";
+      background-color = mkLiteral "#${settings.colors.brightBlack}";
+      color = mkLiteral "#${settings.colors.yellow}";
     };
     "element-text, element-icon" = {
       background-color = mkLiteral "inherit";
@@ -99,12 +96,12 @@ in {
     };
 
     "element normal urgent" = {
-      background-color = mkLiteral "#${colors.yellow}";
+      background-color = mkLiteral "#${settings.colors.yellow}";
     };
 
     "element selected active" = {
-      background = mkLiteral "#${colors.black}";
-      foreground = mkLiteral "#${colors.yellow}";
+      background = mkLiteral "#${settings.colors.black}";
+      foreground = mkLiteral "#${settings.colors.yellow}";
     };
   };'';
 }

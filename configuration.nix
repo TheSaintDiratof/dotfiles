@@ -1,25 +1,6 @@
 { config, pkgs, lib, settings, ... }:
 let
-  colors = import ./colors.nix;
-  settings = import ./settings.nix;
-
-
-  myst = if settings.Xorg then (import ./xorg/st.nix { inherit pkgs colors; }).myst else {};
-  dwm = if settings.Xorg then { enable = true; package = (import ./xorg/dwm.nix { inherit pkgs colors myst; }).mydwm; } else {};
-  xorgPackages = if settings.Xorg then [ pkgs.feh pkgs.kbdd ] else [];
-  xdgPortal = if settings.Wayland then {
-    enable = true;
-    wlr.enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
-  } else {};
-  sway = if settings.Wayland then {
-    enable = true;
-    wrapperFeatures.gtk = true;
-  } else {};
-
-  videoDrivers = [ "amdgpu" ];
-  vulkanLoader = pkgs.amdvlk;
-  vulkanLoader32 = pkgs.driversi686Linux.amdvlk;
+  settings = import ./settings.nix { inherit pkgs; };
 in
 {
   networking.hostId = "b97281ff";
@@ -27,8 +8,6 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      #(import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos")
-      #"${nix-gaming}/modules/pipewireLowLatency.nix"
       ./wireguard.nix
     ];
 
@@ -53,7 +32,6 @@ in
     font = "drdos8x16";
   };
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  #home-manager.users.diratof = (import ./home.nix {inherit config pkgs lib colors Wayland myst;});
   users.users.diratof = {
     isNormalUser = true;
     extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" "tty" ];     
@@ -68,9 +46,12 @@ in
       libreoffice-fresh
       mpv
       gimp
-      #(pkgs.qt6Packages.callPackage ./packages/openmv.nix {})
-      # DE
-    ] ++ xorgPackages;
+      gomuks
+
+      yacreader
+      swayimg
+      zathura
+    ];
     shell = "${pkgs.tcsh}/bin/tcsh";
   };
 
@@ -78,7 +59,7 @@ in
     neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     htop
-    unzip
+    unzip rar
     git
   ];
   security.rtkit.enable = true;
@@ -103,16 +84,15 @@ in
         greeter.enable = true;
         background = /etc/nixos/assets/wallpaper.png;
       };
-      windowManager.dwm = dwm;
       libinput = {
         enable = true;
         mouse.accelSpeed = "-1";
       };
-      videoDrivers = videoDrivers;
+      videoDrivers = settings.videoDrivers;
     };
     printing = {
       enable = true;
-      drivers = [ pkgs.hplip ];
+      drivers = [ pkgs.hplipWithPlugin ];
     };
     udev.extraRules = ''
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", \
@@ -130,9 +110,16 @@ in
         MODE:="0666"
     '';
   };
-  xdg.portal = xdgPortal; 
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
+  }; 
   programs = {
-    sway = sway;
+    sway = {
+      enable = true;
+      wrapperFeatures.gtk = true;
+    };
     steam.enable = true;
   };
   security = {
@@ -151,24 +138,24 @@ in
     opengl = {
       driSupport = true;
       driSupport32Bit = true;
-      extraPackages = with pkgs; [
-        vulkanLoader
-      ];
-      extraPackages32 = with pkgs; [
-        vulkanLoader32
-      ];
+      extraPackages = settings.vulkanLoader;
+      extraPackages32 = settings.vulkanLoader32;
     };
     bluetooth.enable = true;
     pulseaudio.enable = false;
   };
-  fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
-    corefonts
-    terminus_font
-    (nerdfonts.override { fonts = [ "InconsolataGo" "FiraCode" "DroidSansMono" "Terminus" ]; })
-  ];
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      corefonts
+      terminus_font
+      kbd
+      (nerdfonts.override { fonts = [ "InconsolataGo" "FiraCode" "DroidSansMono" "Terminus" ]; })
+    ];
+    fontconfig.antialias = false;
+  };
   system.stateVersion = "23.11"; # Did you read the comment?
   nixpkgs.config = { 
     allowUnfree = true;

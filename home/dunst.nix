@@ -1,4 +1,4 @@
-{ colors }: 
+{ settings }: 
 {
   enable = true;
   settings = {
@@ -8,22 +8,22 @@
       offset = "30x50";
       origin = "bottom-right";
       transparency = 10;
-      frame_color = "#${colors.black}";
+      frame_color = "#${settings.colors.yellow}";
       font = "Terminus:size=12";
     };
     urgency_low = {
-      background = "#${colors.black}";
-      foreground = "#${colors.blue}";
+      background = "#${settings.colors.black}";
+      foreground = "#${settings.colors.blue}";
       timeout = 10;
     };
     urgency_normal = {
-      background = "#${colors.black}";
-      foreground = "#${colors.brightGray}";
+      background = "#${settings.colors.black}";
+      foreground = "#${settings.colors.brightGray}";
       timeout = 10;
     };
     urgency_high = {
-      background = "#${colors.black}";
-      foreground = "#${colors.red}";
+      background = "#${settings.colors.black}";
+      foreground = "#${settings.colors.red}";
       timeout = 10;
     };
   };

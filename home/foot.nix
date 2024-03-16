@@ -1,4 +1,4 @@
-{ colors }:
+{ settings }:
 {
   enable = true;
   server.enable = true;
@@ -8,25 +8,25 @@
     };
     colors = {
       alpha = 0.9;
-      background = "${colors.black}";
-      foreground = "${colors.brightGray}";
-      regular0 = "${colors.black}";
-      regular1 = "${colors.red}";
-      regular2 = "${colors.green}";
-      regular3 = "${colors.yellow}";
-      regular4 = "${colors.blue}";
-      regular5 = "${colors.purple}";
-      regular6 = "${colors.aqua}";
-      regular7 = "${colors.gray}";
+      background = "${settings.colors.black}";
+      foreground = "${settings.colors.brightGray}";
+      regular0 = "${settings.colors.black}";
+      regular1 = "${settings.colors.red}";
+      regular2 = "${settings.colors.green}";
+      regular3 = "${settings.colors.yellow}";
+      regular4 = "${settings.colors.blue}";
+      regular5 = "${settings.colors.purple}";
+      regular6 = "${settings.colors.aqua}";
+      regular7 = "${settings.colors.gray}";
       
-      bright0 = "${colors.brightBlack}";
-      bright1 = "${colors.brightRed}";
-      bright2 = "${colors.brightGreen}";
-      bright3 = "${colors.brightYellow}";
-      bright4 = "${colors.brightBlue}";
-      bright5 = "${colors.brightPurple}";
-      bright6 = "${colors.brightAqua}";
-      bright7 = "${colors.brightGray}";
+      bright0 = "${settings.colors.brightBlack}";
+      bright1 = "${settings.colors.brightRed}";
+      bright2 = "${settings.colors.brightGreen}";
+      bright3 = "${settings.colors.brightYellow}";
+      bright4 = "${settings.colors.brightBlue}";
+      bright5 = "${settings.colors.brightPurple}";
+      bright6 = "${settings.colors.brightAqua}";
+      bright7 = "${settings.colors.brightGray}";
     };
   };
 }

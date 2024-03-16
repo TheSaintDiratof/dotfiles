@@ -1,4 +1,4 @@
-{ pkgs, colors }:
+{ pkgs, settings }:
 {
   enable = true;
   package = pkgs.swaylock-effects;
@@ -17,33 +17,33 @@
     indicator-x-position = 1640;
     indicator-y-position = 800;
 
-    inside-color = "#${colors.black}AA";
-    inside-clear-color = "#${colors.yellow}AA";
-    inside-caps-lock-color = "#${colors.black}AA";
-    inside-ver-color = "#${colors.blue}AA";
-    inside-wrong-color = "#${colors.red}AA";
+    inside-color = "#${settings.colors.black}AA";
+    inside-clear-color = "#${settings.colors.yellow}AA";
+    inside-caps-lock-color = "#${settings.colors.black}AA";
+    inside-ver-color = "#${settings.colors.blue}AA";
+    inside-wrong-color = "#${settings.colors.red}AA";
 
-    line-color = "#${colors.black}FF";
-    line-clear-color = "#${colors.black}FF";
-    line-caps-lock-color = "#${colors.black}FF";
-    line-ver-color = "#${colors.black}FF";
-    line-wrong-color = "#${colors.black}FF";
+    line-color = "#${settings.colors.black}FF";
+    line-clear-color = "#${settings.colors.black}FF";
+    line-caps-lock-color = "#${settings.colors.black}FF";
+    line-ver-color = "#${settings.colors.black}FF";
+    line-wrong-color = "#${settings.colors.black}FF";
 
-    ring-color = "#${colors.green}FF";
-    ring-clear-color = "#${colors.yellow}FF";
-    ring-caps-lock-color = "#${colors.brightGreen}FF";
-    ring-ver-color = "#${colors.blue}FF";
-    ring-wrong-color = "#${colors.red}FF";
+    ring-color = "#${settings.colors.green}FF";
+    ring-clear-color = "#${settings.colors.yellow}FF";
+    ring-caps-lock-color = "#${settings.colors.brightGreen}FF";
+    ring-ver-color = "#${settings.colors.blue}FF";
+    ring-wrong-color = "#${settings.colors.red}FF";
 
-    text-color = "#${colors.brightGray}FF";
-    text-clear-color = "#${colors.brightGray}FF";
-    text-caps-lock-color = "#${colors.brightGray}FF";
-    text-ver-color = "#${colors.brightGray}FF";
-    text-wrong-color = "#${colors.brightGray}FF";
+    text-color = "#${settings.colors.brightGray}FF";
+    text-clear-color = "#${settings.colors.brightGray}FF";
+    text-caps-lock-color = "#${settings.colors.brightGray}FF";
+    text-ver-color = "#${settings.colors.brightGray}FF";
+    text-wrong-color = "#${settings.colors.brightGray}FF";
 
-    layout-bg-color = "#${colors.black}AA";
-    layout-border-color = "#${colors.black}AA";
-    layout-text-color = "#${colors.brightGray}FF";
+    layout-bg-color = "#${settings.colors.black}AA";
+    layout-border-color = "#${settings.colors.black}AA";
+    layout-text-color = "#${settings.colors.brightGray}FF";
 
     image = "/etc/nixos/assets/wallpaper.png";
 

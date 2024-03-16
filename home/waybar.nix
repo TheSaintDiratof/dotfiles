@@ -1,4 +1,4 @@
-{ colors, pkgs }:
+{ pkgs, settings }:
 {
   enable = true;
   systemd.enable = true;
@@ -98,8 +98,8 @@
     }
     window#waybar {
       border: none;
-      background-color: #${colors.black};
-      color: #${colors.brightGray};
+      background-color: #${settings.colors.black};
+      color: #${settings.colors.brightGray};
       transition-property: background-color;
       transition-duration: .5s;
     }
@@ -117,50 +117,50 @@
       border-radius: 0px 5px 5px 0px;
     }
     #mpris {
-      background-color: #${colors.yellow};
-      color: #${colors.black};
+      background-color: #${settings.colors.yellow};
+      color: #${settings.colors.black};
       border-radius: 5px;
     }
     #pulseaudio {
       padding: 0px 5px;
       border-radius: 5px;
-      background-color: #${colors.aqua};
-      color: #${colors.black};
+      background-color: #${settings.colors.aqua};
+      color: #${settings.colors.black};
     }
     #pulseaudio.muted {
-      background-color: #${colors.brightYellow};
-      color: #${colors.black};
+      background-color: #${settings.colors.brightYellow};
+      color: #${settings.colors.black};
     }
     #tray {
       padding: 0px 5px;
       border-radius: 5px;
       margin-left: 5px;
-      background-color: #${colors.aqua};
-      color: #${colors.black};
+      background-color: #${settings.colors.aqua};
+      color: #${settings.colors.black};
     }
     #idle_inhibitor {
       padding: 0px 0px;
       border-radius: 5px;
       margin-left: 5px;
       margin-right: 5px;
-      background-color: #${colors.brightGray};
-      color: #${colors.black};
+      background-color: #${settings.colors.brightGray};
+      color: #${settings.colors.black};
     }
     #idle_inhibitor.activated {
-      background-color: #${colors.gray};
-      color: #${colors.brightGray};
+      background-color: #${settings.colors.gray};
+      color: #${settings.colors.brightGray};
     }
 
     #clock {
       padding: 0px 5px;
       border-radius: 5px;
       margin: 0px 5px;
-      background-color: #${colors.brightYellow};
-      color: #${colors.black};
+      background-color: #${settings.colors.brightYellow};
+      color: #${settings.colors.black};
     }
     #custom-vpn {
-      background-color: #${colors.yellow};
-      color: #${colors.black};
+      background-color: #${settings.colors.yellow};
+      color: #${settings.colors.black};
       margin-left: 5px;
       margin-right: 5px;
       padding: 0px 5px;
