@@ -1,12 +1,12 @@
 { pkgs, settings }:
 let
   screenshot = pkgs.writeShellScriptBin "screenshot.sh" ''
-FILE=$HOME/.local/tmp/screenshots/$(date +%d%m%y_%H%M%S).png
 if [ "$1" == "-p" ]; then
   AREA="$(${pkgs.slurp}/bin/slurp)"
 else
   AREA="0,0 1920x1080"
 fi
+FILE=$HOME/.local/tmp/screenshots/$(date +%d%m%y_%H%M%S).png
 if ${pkgs.grim}/bin/grim -g "$AREA" "$FILE"; then
   cat $FILE | ${pkgs.wl-clipboard}/bin/wl-copy --type image/png
 fi
@@ -89,7 +89,7 @@ in
       mod = "Mod4";
       tmux_term = "${settings.terminal} -e ${pkgs.tmux}/bin/tmux a";
       term = "${settings.terminal}";
-      menu = ''${pkgs.bemenu}/bin/bemenu-run --fn 'JetBrainsMono Nerd Font:size=13'\
+      menu = ''${pkgs.bemenu}/bin/bemenu-run --fn 'Terminus Bold 14'\
         --nb '#${settings.colors.black}' --fb '#${settings.colors.black}' --nf '#${settings.colors.brightGray}'\
         --sb '#${settings.colors.aqua}' --sf '#${settings.colors.black}' --hf '#${settings.colors.brightGray}'\
         --tf '#${settings.colors.brightGray}' --tb '#${settings.colors.yellow}' -b'';

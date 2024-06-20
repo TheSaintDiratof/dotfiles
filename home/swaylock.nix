@@ -3,7 +3,7 @@
   enable = true;
   package = pkgs.swaylock-effects;
   settings = {
-    font = "Nimbus Sans L";
+    font = "Terminus";
     font-size = 20;
     grace-no-mouse = true;
     show-keyboard-layout = true;

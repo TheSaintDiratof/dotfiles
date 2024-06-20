@@ -1,12 +1,12 @@
 { pkgs, config, settings }:
 {
   enable = true;
+  font = "Terminus Bold 14";
   package = pkgs.rofi-wayland;
   terminal = settings.terminal;
-  theme = #let
-    #inherit (config.home-manager.users.diratof.lib.formats.rasi) mkLiteral;
-  #in{
-    ''
+  theme = let
+    inherit (config.lib.formats.rasi) mkLiteral;
+  in{  
     "*" = {
       background-color = mkLiteral "#${settings.colors.black}";
     };
@@ -103,5 +103,5 @@
       background = mkLiteral "#${settings.colors.black}";
       foreground = mkLiteral "#${settings.colors.yellow}";
     };
-  };'';
+  };
 }

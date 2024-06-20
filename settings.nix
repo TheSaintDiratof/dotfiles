@@ -21,6 +21,7 @@ let
     aqua          = "689D6A";
     gray          = "A89984";
   };
+  st = (import ./xorg/st.nix { inherit pkgs colors; }).st;
 in{
   videoDrivers = [ "amdgpu" ];
   vulkanLoader = [ pkgs.amdvlk ];
@@ -28,5 +29,6 @@ in{
 
   colors = colors;
 
+  #terminal = "${st}/bin/st";
   terminal = "${pkgs.foot}/bin/foot";
 }

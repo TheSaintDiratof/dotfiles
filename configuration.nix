@@ -1,10 +1,10 @@
 { config, pkgs, lib, settings, ... }:
 let
   settings = import ./settings.nix { inherit pkgs; };
+  dwm = { enable = true; package = (import ./xorg/dwm.nix { inherit pkgs settings; }).dwm; };
+  xorgPackages = [ pkgs.feh pkgs.kbdd ];
 in
 {
-  networking.hostId = "b97281ff";
-
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -20,9 +20,16 @@ in
     };
     kernelPackages = pkgs.linuxKernel.packages.linux_rt_5_15; 
     supportedFilesystems = [ "zfs" ];
+    zfs.extraPools = [ "pool0" ];
+    binfmt.emulatedSystems = [ "aarch64-linux" ];
   };
 
-  networking.hostName = "4eJIoBe4HoCTb"; # Define your hostname.
+  networking = {
+    hostName = "4eJIoBe4HoCTb"; # Define your hostname.
+    hostId = "b97281ff";
+    dhcpcd.wait = "background";
+  };
+
   time.timeZone = "Asia/Yekaterinburg";
 
 
@@ -45,13 +52,19 @@ in
       deluge
       libreoffice-fresh
       mpv
-      gimp
       gomuks
+      gimp
 
       yacreader
       swayimg
       zathura
-    ];
+      telegram-desktop
+
+      (pkgs.callPackage /home/diratof/Documents/awesfx/default.nix {})
+      sdcv
+
+      gamescope
+    ] ++ xorgPackages;
     shell = "${pkgs.tcsh}/bin/tcsh";
   };
 
@@ -72,6 +85,10 @@ in
       jack.enable = true;
     };
     dbus.enable = true;
+    libinput = {
+      enable = true;
+      mouse.accelSpeed = "-1";
+    };
     xserver = {
       enable = true;
       xkb = {
@@ -84,11 +101,8 @@ in
         greeter.enable = true;
         background = /etc/nixos/assets/wallpaper.png;
       };
-      libinput = {
-        enable = true;
-        mouse.accelSpeed = "-1";
-      };
       videoDrivers = settings.videoDrivers;
+      windowManager.dwm = dwm;
     };
     printing = {
       enable = true;
@@ -113,7 +127,7 @@ in
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
+    extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gtk ];
   }; 
   programs = {
     sway = {
@@ -151,6 +165,7 @@ in
       noto-fonts-emoji
       corefonts
       terminus_font
+      comfortaa
       kbd
       (nerdfonts.override { fonts = [ "InconsolataGo" "FiraCode" "DroidSansMono" "Terminus" ]; })
     ];
@@ -160,9 +175,6 @@ in
   nixpkgs.config = { 
     allowUnfree = true;
     allowBroken = true;
-    permittedInsecurePackages = [
-      "curl-impersonate-0.5.4"
-    ];
   };
   nix.settings = {
     sandbox = true;

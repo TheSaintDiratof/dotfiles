@@ -7,10 +7,10 @@
       layer = "top";
       position = "top";
       output = [ "HDMI-A-1" ];
-      height = 32;
-      modules-left = [ "custom/stub" "mpris" ];
+      height = 28;
+      modules-left = [ "mpris" ];
       modules-center = [ ];
-      modules-right = [ "custom/vpn" "pulseaudio" "tray" "idle_inhibitor" "clock" "custom/stub" ];
+      modules-right = [ "custom/vpn" "pulseaudio" "tray" "idle_inhibitor" "clock" ];
       "mpris" = {
         format = "<b>{player} {status_icon}</b> {artist} <b>—</b> {title}";
         on-right-click = "shift";
@@ -45,13 +45,10 @@
       };
   
       "pulseaudio" = {
-        #// "scroll-step": 1; // %; can be a float
-        format = "{volume}% {icon} {format_source}";
-        format-bluetooth = "{volume}% {icon} {format_source}";
-        format-bluetooth-muted = " {icon} {format_source}";
-        format-muted = " {format_source}";
-        format-source = "{volume}% ";
-        format-source-muted = "";
+        format = "O:{volume}% {format_source}";
+        format-muted = "O:0% {format_source}";
+        format-source = "S:{volume}%";
+        format-source-muted = "S:0%";
         format-icons = {
           headphone = "";
           default = ["" "" ""];
@@ -83,17 +80,15 @@
           on-click = "${vpn}/bin/vpn.sh -t";
           interval = 1;
       };
-      "custom/stub" = {
-        format = " ";
-      };
     };
   };
   style = ''* {
       border: 1px solid transparent;
       border-radius: 0px;
       margin: 0px 0px;
-      font-family: "InconsolataGo Nerd Font Mono:style=bold";
-      font-size: 18px;
+      font-family: Terminus;
+      font-size: 14px;
+      font-weight: bold;
       min-height: 0px;
     }
     window#waybar {
@@ -117,13 +112,18 @@
       border-radius: 0px 5px 5px 0px;
     }
     #mpris {
+      border-radius: 5px;
+      padding: 0px 5px;
+      margin: 0px 5px;
+
       background-color: #${settings.colors.yellow};
       color: #${settings.colors.black};
-      border-radius: 5px;
     }
     #pulseaudio {
       padding: 0px 5px;
       border-radius: 5px;
+      margin: 0px 5px;
+
       background-color: #${settings.colors.aqua};
       color: #${settings.colors.black};
     }
@@ -134,15 +134,16 @@
     #tray {
       padding: 0px 5px;
       border-radius: 5px;
-      margin-left: 5px;
+      margin: 0px 5px;
+
       background-color: #${settings.colors.aqua};
       color: #${settings.colors.black};
     }
     #idle_inhibitor {
-      padding: 0px 0px;
+      padding: 0px 5px;
       border-radius: 5px;
-      margin-left: 5px;
-      margin-right: 5px;
+      margin: 0px 5px;
+
       background-color: #${settings.colors.brightGray};
       color: #${settings.colors.black};
     }
@@ -155,16 +156,17 @@
       padding: 0px 5px;
       border-radius: 5px;
       margin: 0px 5px;
+
       background-color: #${settings.colors.brightYellow};
       color: #${settings.colors.black};
     }
     #custom-vpn {
-      background-color: #${settings.colors.yellow};
-      color: #${settings.colors.black};
-      margin-left: 5px;
-      margin-right: 5px;
       padding: 0px 5px;
       border-radius: 5px;
+      margin: 0px 5px;
+
+      background-color: #${settings.colors.yellow};
+      color: #${settings.colors.black};
     }
   '';
 }

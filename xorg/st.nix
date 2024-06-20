@@ -1,6 +1,6 @@
 { pkgs, colors, ... }:
 {
-  myst = pkgs.st.override {
+  st = pkgs.st.override {
     patches = [
       (pkgs.fetchpatch {
         url = "http://st.suckless.org/patches/alpha/st-alpha-20220206-0.8.5.diff";

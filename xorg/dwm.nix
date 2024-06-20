@@ -24,7 +24,13 @@
   '';
   bash = "${pkgs.bash}/bin/bash";
 in {
-  mydwm = pkgs.dwm.override {
+  dwm = pkgs.dwm.override {
+    patches = [
+      (pkgs.fetchpatch {
+        url = "http://dwm.suckless.org/patches/actualfullscreen/dwm-actualfullscreen-20211013-cb3f58a.diff";
+        sha256 = "sha256-vsTuudJCy7Zo1wdwpI/nY7Zu1txXx90QoDfJLmfDUH8=";
+      })
+    ];
     conf = pkgs.writeText "config.h" ''
       /* appearance */
       //static const int barheight = 4;
@@ -127,14 +133,15 @@ in {
       	{ MODKEY,                       XK_o,      incnmaster,     {.i = -1 } },
       	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
       	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-      	//{ MODKEY,                       XK_Return, zoom,           {0} },
+      	{ MODKEY,                       XK_Return, zoom,           {0} },
       	{ MODKEY,                       XK_Tab,    view,           {0} },
       	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
       	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
       	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
       	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
       	{ MODKEY|Mod1Mask,              XK_x,      setlayout,      {0} },
-      	{ MODKEY|ShiftMask,             XK_x,      togglefloating, {0} },
+        { MODKEY|ShiftMask,             XK_x,      togglefloating, {0} },
+        { MODKEY|ShiftMask,             XK_f,      togglefullscr,  {0} },
       	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
       	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
       	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
