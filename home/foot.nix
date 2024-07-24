@@ -4,7 +4,7 @@
   server.enable = true;
   settings = {
     main = {
-      font = "Terminus:size=14";
+      font = "Terminus:size=12";
     };
     colors = {
       alpha = 1;

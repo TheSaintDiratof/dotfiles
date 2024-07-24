@@ -1,5 +1,9 @@
 { pkgs }:
-let 
+{
+  videoDrivers = [ "amdgpu" ];
+  vulkanLoader = [ pkgs.amdvlk ];
+  vulkanLoader32 = [ pkgs.driversi686Linux.amdvlk ];
+
   colors = {
     ultrablack    = "000000";
   
@@ -21,14 +25,10 @@ let
     aqua          = "689D6A";
     gray          = "A89984";
   };
-  st = (import ./xorg/st.nix { inherit pkgs colors; }).st;
-in{
-  videoDrivers = [ "amdgpu" ];
-  vulkanLoader = [ pkgs.amdvlk ];
-  vulkanLoader32 = [ pkgs.driversi686Linux.amdvlk ];
-
-  colors = colors;
-
-  #terminal = "${st}/bin/st";
+  fonts = {
+    lockTime = "Terminus 24";
+    lockDate = "Terminus 18";
+    lockLayout = "Terminus 12";
+  };
   terminal = "${pkgs.foot}/bin/foot";
 }

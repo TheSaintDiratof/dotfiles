@@ -6,7 +6,8 @@ in {
   home.sessionPath = [ "$HOME/.local/bin" ];
   home.stateVersion = "23.11";   
   home.sessionVariables = {
-    XDG_CURRENT_DESKTOP = "sway"; 
+    XDG_CURRENT_DESKTOP = "sway";
+    QT_QPA_PLATFORM = "wayland";
   };
 
   programs = {
@@ -14,7 +15,7 @@ in {
     neovim = import ./home/neovim.nix {inherit pkgs;};
     #My DE
     waybar = import ./home/waybar.nix { inherit pkgs settings; };
-    swaylock = import ./home/swaylock.nix { inherit pkgs settings; };
+    hyprlock = import ./home/hyprlock.nix { inherit settings; };
     foot = import ./home/foot.nix { inherit settings; };
    
     tmux = import ./home/tmux.nix {inherit pkgs;};
@@ -23,12 +24,23 @@ in {
   };
 
   services = {
-    swayidle = import ./home/swayidle.nix { inherit pkgs; };
+    hypridle = import ./home/hypridle.nix { inherit pkgs; }; 
     dunst = import ./home/dunst.nix {inherit settings;};
+    hyprpaper = import ./home/hyprpaper.nix {inherit settings; };
     playerctld.enable = true;
   };
 
   wayland = {
-    windowManager.sway = import ./home/sway.nix { inherit pkgs settings; };
+    windowManager = { 
+      hyprland = import ./home/hyprland.nix { inherit pkgs settings; };
+    };
+  };
+  gtk = { 
+    enable = true;
+    theme.name = "Nordic-bluish-accent-standard-buttons";
+  };
+  qt = { 
+    enable = true;
+    platformTheme.name = "gtk";
   };
 }

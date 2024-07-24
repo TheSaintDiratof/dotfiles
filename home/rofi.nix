@@ -1,8 +1,7 @@
 { pkgs, config, settings }:
 {
   enable = true;
-  font = "Terminus Bold 14";
-  package = pkgs.rofi-wayland;
+  font = "Terminus Bold 12";
   terminal = settings.terminal;
   theme = let
     inherit (config.lib.formats.rasi) mkLiteral;

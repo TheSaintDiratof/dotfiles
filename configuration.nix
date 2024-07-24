@@ -1,8 +1,6 @@
 { config, pkgs, lib, settings, ... }:
 let
   settings = import ./settings.nix { inherit pkgs; };
-  dwm = { enable = true; package = (import ./xorg/dwm.nix { inherit pkgs settings; }).dwm; };
-  xorgPackages = [ pkgs.feh pkgs.kbdd ];
 in
 {
   imports =
@@ -21,7 +19,7 @@ in
     kernelPackages = pkgs.linuxKernel.packages.linux_rt_5_15; 
     supportedFilesystems = [ "zfs" ];
     zfs.extraPools = [ "pool0" ];
-    binfmt.emulatedSystems = [ "aarch64-linux" ];
+    binfmt.emulatedSystems = [ "aarch64-linux" "armv7l-linux" ];
   };
 
   networking = {
@@ -35,7 +33,7 @@ in
 
   i18n.defaultLocale = "en_US.UTF-8";
   console = {
-    keyMap = "dvorak";
+    keyMap = "colemak";
     font = "drdos8x16";
   };
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -49,22 +47,25 @@ in
       xonotic
       # desktop
       pavucontrol
-      deluge
+      qbittorrent
       libreoffice-fresh
       mpv
       gomuks
       gimp
+      krita
 
       yacreader
-      swayimg
+      swayimg feh
       zathura
       telegram-desktop
 
       (pkgs.callPackage /home/diratof/Documents/awesfx/default.nix {})
       sdcv
 
-      gamescope
-    ] ++ xorgPackages;
+      (gamescope.overrideAttrs { version = "3.14.2"; }) 
+      musescore
+      qemu
+    ];
     shell = "${pkgs.tcsh}/bin/tcsh";
   };
 
@@ -93,7 +94,7 @@ in
       enable = true;
       xkb = {
         layout = "us,ru";
-        variant = "dvorak,";
+        variant = "colemak,";
         options = "grp:win_space_toggle";
       };
       displayManager.lightdm = {
@@ -102,7 +103,6 @@ in
         background = /etc/nixos/assets/wallpaper.png;
       };
       videoDrivers = settings.videoDrivers;
-      windowManager.dwm = dwm;
     };
     printing = {
       enable = true;
@@ -112,6 +112,8 @@ in
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", \
         MODE:="0666", \
         SYMLINK+="stlinkv2_%n"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="5512", \
+        MODE:="0666"
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="abd1", \
         MODE:="0666"
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="d00d", \
