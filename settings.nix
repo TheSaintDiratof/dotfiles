@@ -26,9 +26,8 @@
     gray          = "A89984";
   };
   fonts = {
-    lockTime = "Terminus 24";
-    lockDate = "Terminus 18";
-    lockLayout = "Terminus 12";
+    lock = "Terminus";
   };
   terminal = "${pkgs.foot}/bin/foot";
+  wallpaper = /etc/nixos/assets/wallpaper.png;
 }

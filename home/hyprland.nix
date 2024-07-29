@@ -3,7 +3,8 @@
   enable = true;
   systemd.enable = true;
   settings = {
-    monitor = "HDMI-A-1,1920x1080@60,0x0";
+    #monitor = "HDMI-A-1,1920x1080@72.91,0x0,1.0";
+    monitor = "HDMI-A-1,1920x1080@60.00,0x0,1.0";
     general = {
       gaps_in = 5;
       gaps_out = 5;
@@ -16,6 +17,15 @@
       no_focus_fallback = false;
       allow_tearing = false;
     };
+    windowrulev2 = [
+      #"immediate, class:^(cs2)$"
+      "float, class:(org.telegram.desktop), title:(Media viewer)"
+      "size 1908 1039, class:(org.telegram.desktop), title:(Media viewer)"
+      "move 6 36, class:(org.telegram.desktop), title:(Media viewer)"
+      "workspace 6, class:(steam), title:(Steam)"
+      "workspace 7, class:(cs2)"
+      "float, class:(org.qbittorrent.qBittorrent), title:(^((?!qBittorrent v4\.6\.4).)*$)"
+    ];
     decoration = {
       shadow_render_power = 4;
       rounding = 0;
@@ -27,7 +37,7 @@
       kb_options = "grp:win_space_toggle";
       repeat_rate = 25;
       repeat_delay = 600;
-      sensitivity = 0.0;
+      sensitivity = -0.5;
       accel_profile = "flat";
       follow_mouse = 1;
       mouse_refocus = true;
@@ -43,6 +53,7 @@
     exec-once = [ 
       "${pkgs.hyprland-per-window-layout}/bin/hyprland-per-window-layout" 
       "${pkgs.waybar}/bin/waybar"
+      "${pkgs.hypridle}/bin/hypridle"
     ];
     misc = {
       disable_hyprland_logo = true;
@@ -62,7 +73,7 @@
       '';
       tmux_term = "${settings.terminal} -e ${pkgs.tmux}/bin/tmux a";
       term = "${settings.terminal}";
-      menu = pkgs.writeShellScriptBin "dmenu.sh " ''
+      menu = pkgs.writeShellScriptBin "bemenu.sh" ''
         ${pkgs.bemenu}/bin/bemenu-run --fn 'Terminus Bold 12' \
         --nb '#${settings.colors.black}' --fb '#${settings.colors.black}' \
         --nf '#${settings.colors.brightGray}' --sb '#${settings.colors.aqua}' \
@@ -87,10 +98,10 @@
       "$mod, RETURN, exec, ${tmux_term}"
       "$mod SHIFT, RETURN, exec, ${term}"
       "$mod SHIFT, D, exec, ${second_menu}"
-      "$mod, D, exec, ${menu}"
+      "$mod, D, exec, ${menu}/bin/bemenu.sh"
 
       "$mod SHIFT, Q, killactive"
-      #"$mod SHIFT, C, reload"
+      "$mod SHIFT, C, exec, hyprctl reload"
       "$mod SHIFT, E, exec, hyprctl dispatch exit 1"
 
       "$mod, left, movefocus, l"
@@ -120,8 +131,10 @@
       "$mod SHIFT, 0, movetoworkspace, 10"
 
       "$mod, g, fullscreen"
+      "$mod SHIFT, g, fakefullscreen"
       "$mod SHIFT, x, togglefloating"
-      #"$mod, x, focus mode_toggle"
+      "$mod, p, pseudo,"
+      "$mod, f, togglesplit,"
 
       "$mod SHIFT, S, movetoworkspace, special"
       "$mod, S, togglespecialworkspace"

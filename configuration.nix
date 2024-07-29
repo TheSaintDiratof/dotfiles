@@ -1,4 +1,4 @@
-{ config, pkgs, lib, settings, ... }:
+{ config, pkgs, lib, settings, inputs, ... }:
 let
   settings = import ./settings.nix { inherit pkgs; };
 in
@@ -6,10 +6,10 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./wireguard.nix
+      #./wireguard.nix
+      ./xray.nix
     ];
-
-  # Use the systemd-boot EFI boot loader.
+    # Use the systemd-boot EFI boot loader.
   boot = { 
     loader = {
       systemd-boot.enable = true;
@@ -25,6 +25,7 @@ in
   networking = {
     hostName = "4eJIoBe4HoCTb"; # Define your hostname.
     hostId = "b97281ff";
+    nameservers = [ "1.1.1.1" "8.8.8.8" ];
     dhcpcd.wait = "background";
   };
 
@@ -45,27 +46,26 @@ in
       bc
       cmus
       xonotic
+      qemu
       # desktop
       pavucontrol
       qbittorrent
       libreoffice-fresh
-      mpv
-      gomuks
-      gimp
-      krita
-
-      yacreader
-      swayimg feh
-      zathura
-      telegram-desktop
-
-      (pkgs.callPackage /home/diratof/Documents/awesfx/default.nix {})
+      mc
+      yt-dlp android-tools
       sdcv
 
-      (gamescope.overrideAttrs { version = "3.14.2"; }) 
+      yacreader
+      swayimg feh krita
+      zathura
+      mpv
+      calibre
       musescore
-      qemu
-    ];
+
+      telegram-desktop
+
+      (pkgs.callPackage ./packages/awesfx.nix {})
+    ] ++ [ inputs.agenix.packages.${pkgs.system}.default ];
     shell = "${pkgs.tcsh}/bin/tcsh";
   };
 
@@ -78,6 +78,13 @@ in
   ];
   security.rtkit.enable = true;
   services = {
+    displayManager = {
+      enable = true;
+      sddm = {
+        enable = true;
+        wayland.enable = true;
+      };
+    };
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -96,11 +103,6 @@ in
         layout = "us,ru";
         variant = "colemak,";
         options = "grp:win_space_toggle";
-      };
-      displayManager.lightdm = {
-        enable = true;
-        greeter.enable = true;
-        background = /etc/nixos/assets/wallpaper.png;
       };
       videoDrivers = settings.videoDrivers;
     };
@@ -132,9 +134,9 @@ in
     extraPortals = [ pkgs.xdg-desktop-portal-wlr pkgs.xdg-desktop-portal-gtk ];
   }; 
   programs = {
-    sway = {
+    hyprland = {
       enable = true;
-      wrapperFeatures.gtk = true;
+      xwayland.enable = true;
     };
     steam.enable = true;
   };

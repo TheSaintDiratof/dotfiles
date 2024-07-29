@@ -13,27 +13,27 @@
     label = [ 
       { # Clock
         monitor = "";
-        text = "cmd[update:1000] date +'%a, %d/%m/%y'";
-        shadow_passes = 1;
-        shadow_boost = 0.5;
-        color = "0xFF${settings.colors.brightGray}";
-        font_size = 65;
-        font_family = "${settings.fonts.lockTime}";
-
-        position = "600, -400";
-        halign = "center";
-        valign = "center";
-      } 
-      { # Date
-        monitor = "";
         text = "cmd[update:1000] date +'%H:%M:%S'";
         shadow_passes = 1;
         shadow_boost = 0.5;
         color = "0xFF${settings.colors.brightGray}";
         font_size = 65;
-        font_family = "${settings.fonts.lockDate}";
+        font_family = "${settings.fonts.lock}";
 
-        position = "600, -550";
+        position = "600, -430";
+        halign = "center";
+        valign = "center";
+      } 
+      { # Date
+        monitor = "";
+        text = "cmd[update:1000] date +'%a, %d/%m/%y'";
+        shadow_passes = 1;
+        shadow_boost = 0.5;
+        color = "0xFF${settings.colors.brightGray}";
+        font_size = 30;
+        font_family = "${settings.fonts.lock}";
+
+        position = "600, -400";
         halign = "center";
         valign = "center";
       }
@@ -43,10 +43,10 @@
         shadow_passes = 1;
         shadow_boost = 0.5;
         color = "0xFF${settings.colors.brightGray}";
-        font_size = 65;
-        font_family = "${settings.fonts.lockLayout}";
+        font_size = 14;
+        font_family = "${settings.fonts.lock}";
 
-        position = "600, -550";
+        position = "600, -400";
         halign = "center";
         valign = "center";
       }
