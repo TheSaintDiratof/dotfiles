@@ -53,6 +53,7 @@
   fonts = {
     lock = "Terminus";
     terminal = "Terminus:size=12";
+    launcher = "Terminus 12";
     notification = "Terminus 14";
     gtk = {
       package = pkgs.dejavu_fonts;
