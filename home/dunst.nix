@@ -9,7 +9,7 @@
       origin = "bottom-right";
       transparency = 10;
       frame_color = "#${settings.colors.yellow}";
-      font = "Terminus 14";
+      font = settings.fonts.notification;
     };
     urgency_low = {
       background = "#${settings.colors.black}";

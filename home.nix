@@ -1,40 +1,34 @@
-{ config, pkgs, lib, stylix, ... }:
+{ config, pkgs, lib, ... }:
 let
-  settings = import ./settings.nix {inherit pkgs; };
+  settings = import ./settings.nix {inherit pkgs config; };
 in { 
-  stylix = {
-    enable = true;
-    image = settings.wallpaper;
-    polarity = "dark";
-    #base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
-    targets = {
-      bemenu.enable = true;
-      dunst.enable = true;
-      feh.enable = true;
-      firefox.enable = false;
-      firefox.profileNames = [ "6cytz6gt.default-release" ];
-      foot.enable = true;
-      gtk.enable = true;
-      hyprland.enable = true;
-      hyprpaper.enable = true;
-      rofi.enable = true;
-      tmux.enable = true;
-      vim.enable = true;
-      waybar.enable = true;
-      zathura.enable = true;
+  imports = [ 
+    (import ./home/qt/qt.nix {inherit pkgs settings; }) 
+    (import ./home/gtk/gtk.nix {inherit pkgs settings; }) 
+  ];
+  home = { 
+    username = "diratof";
+    homeDirectory = "/home/diratof";
+    sessionPath = [ "$HOME/.local/bin" ];
+    stateVersion = "23.11";   
+    sessionVariables = {
+      XDG_CURRENT_DESKTOP = "Hyprland";
+      QT_QPA_PLATFORM = "qt5ct";
+      QT_QPA_PLATFORMTHEME = "qt5ct";
+      EDITOR = "nvim";
     };
-  };
-  home.sessionPath = [ "$HOME/.local/bin" ]
-  home.stateVersion = "23.11";   
-  home.sessionVariables = {
-    XDG_CURRENT_DESKTOP = "sway";
-    QT_QPA_PLATFORM = "wayland";
-    EDITOR = "nvim";
+    pointerCursor = {
+      name = "Vimix-cursors";
+      package = pkgs.vimix-cursors;
+      size = 14;
+      x11.enable = true;
+      gtk.enable = true;
+    };
   };
 
   programs = {
     obs-studio = import ./home/obs-studio.nix {inherit pkgs;};
-    neovim = import ./home/neovim.nix {inherit pkgs;};
+    nixvim = import ./home/nixvim.nix {inherit settings;};
     #My DE
     waybar = import ./home/waybar.nix { inherit pkgs settings; };
     hyprlock = import ./home/hyprlock.nix { inherit settings; };
@@ -53,17 +47,5 @@ in {
     playerctld.enable = true;
   };
 
-  wayland = {
-    windowManager = { 
-      hyprland = import ./home/hyprland.nix { inherit pkgs settings; };
-    };
-  };
-  gtk = { 
-    enable = true;
-    theme.name = "Nordic-bluish-accent-standard-buttons";
-  };
-  qt = { 
-    enable = true;
-    platformTheme.name = "gtk";
-  };
+  wayland.windowManager.hyprland = import ./home/hyprland.nix { inherit pkgs settings; };
 }

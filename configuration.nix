@@ -1,4 +1,4 @@
-{ config, pkgs, lib, settings, inputs, ... }:
+{ pkgs, inputs, ... }:
 let
   settings = import ./settings.nix { inherit pkgs; };
 in
@@ -6,7 +6,7 @@ in
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      #./wireguard.nix
+      ./wireguard.nix
       ./xray.nix
     ];
     # Use the systemd-boot EFI boot loader.
@@ -127,6 +127,10 @@ in
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="2b0e", ATTRS{idProduct}=="171b", \
         MODE:="0666"
     '';
+    chrony = {
+      enable = true;
+      servers = [ "0.ru.pool.ntp.org" "1.ru.pool.ntp.org" "2.ru.pool.ntp.org" "3.ru.pool.ntp.org" ];
+    };
   };
   xdg.portal = {
     enable = true;

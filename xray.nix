@@ -4,7 +4,7 @@
     secrets.xray = {
       file = ./secrets/xray.age;
     };
-    identityPaths = [ "/home/diratof/.ssh/id_ed25519" ];
+    identityPaths = [ "/root/.ssh/id_ed25519" ];
   };
 
   services.xray = {

@@ -3,7 +3,9 @@
   enable = true;
   systemd.enable = true;
   settings = {
-    #monitor = "HDMI-A-1,1920x1080@72.91,0x0,1.0";
+    env = [
+      "QT_QPA_PLATFORMTHEME,qt5ct "
+    ];
     monitor = "HDMI-A-1,1920x1080@60.00,0x0,1.0";
     general = {
       gaps_in = 5;
@@ -157,11 +159,13 @@
       binde = , down, resizeactive, 0 10
       binde = , escape, submap, reset
     submap = reset
-    general:col.active_border = "0xFF${settings.colors.yellow}"
-    general:col.inactive_border = "0xFF${settings.colors.gray}"
-    general:col.nogroup_border = "0xFF${settings.colors.brightPurple}"
-    general:col.nogroup_border_active = "0xFF${settings.colors.purple}"
-    #decoration:col.shadow = "0xEE${settings.colors.black}"
-    #decoration:col.shadow_inactive = "0xEE${settings.colors.brightBlack}"
+    general:col.active_border = "0xFF${settings.colors.base0D}"
+    general:col.inactive_border = "0xFF${settings.colors.base03}"
+    group:col.border_inactive = "0xFF${settings.colors.base03}";
+    group:col.border_active = "0xFF${settings.colors.base0D}";
+    group:col.border_locked_active = "0xFF${settings.colors.base0C}";
+    #groupbar:col.active = "0xFF${settings.colors.base0D}";
+    #groupbar:col.inactive = "0xFF${settings.colors.base03}";
+    #decoration:col.shadow = "0xEE${settings.colors.base00}"
   '';
 }

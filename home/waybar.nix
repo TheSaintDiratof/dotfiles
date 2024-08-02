@@ -1,7 +1,7 @@
 { pkgs, settings }:
 {
   enable = true;
-  systemd.enable = true;
+  systemd.enable = false;
   settings = { 
     mainBar = {
       layer = "top";
@@ -93,8 +93,8 @@
     }
     window#waybar {
       border: none;
-      background-color: #${settings.colors.black};
-      color: #${settings.colors.brightGray};
+      background-color: #${settings.colors.base00};
+      color: #${settings.colors.base07};
       transition-property: background-color;
       transition-duration: .5s;
     }
@@ -116,40 +116,36 @@
       padding: 0px 5px;
       margin: 0px 5px;
 
-      background-color: #${settings.colors.yellow};
-      color: #${settings.colors.black};
+      background-color: #${settings.colors.base0F};
+      color: #${settings.colors.base00};
     }
     #pulseaudio {
       padding: 0px 5px;
       border-radius: 5px;
       margin: 0px 5px;
 
-      background-color: #${settings.colors.aqua};
-      color: #${settings.colors.black};
-    }
-    #pulseaudio.muted {
-      background-color: #${settings.colors.brightYellow};
-      color: #${settings.colors.black};
+      background-color: #${settings.colors.base0D};
+      color: #${settings.colors.base00};
     }
     #tray {
       padding: 0px 5px;
       border-radius: 5px;
       margin: 0px 5px;
 
-      background-color: #${settings.colors.aqua};
-      color: #${settings.colors.black};
+      background-color: #${settings.colors.base0D};
+      color: #${settings.colors.base00};
     }
     #idle_inhibitor {
       padding: 0px 5px;
       border-radius: 5px;
       margin: 0px 5px;
 
-      background-color: #${settings.colors.brightGray};
-      color: #${settings.colors.black};
+      background-color: #${settings.colors.base07};
+      color: #${settings.colors.base00};
     }
     #idle_inhibitor.activated {
-      background-color: #${settings.colors.gray};
-      color: #${settings.colors.brightGray};
+      background-color: #${settings.colors.base02};
+      color: #${settings.colors.base07};
     }
 
     #clock {
@@ -157,16 +153,16 @@
       border-radius: 5px;
       margin: 0px 5px;
 
-      background-color: #${settings.colors.brightYellow};
-      color: #${settings.colors.black};
+      background-color: #${settings.colors.base0A};
+      color: #${settings.colors.base00};
     }
     #custom-vpn {
       padding: 0px 5px;
       border-radius: 5px;
       margin: 0px 5px;
 
-      background-color: #${settings.colors.yellow};
-      color: #${settings.colors.black};
+      background-color: #${settings.colors.base0F};
+      color: #${settings.colors.base00};
     }
   '';
 }

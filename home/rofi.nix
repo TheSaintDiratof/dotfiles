@@ -1,14 +1,11 @@
 { pkgs, config, settings }:
 {
   enable = true;
-  font = "Terminus Bold 12";
+  #font = "Terminus Bold 12";
   terminal = settings.terminal;
   theme = let
     inherit (config.lib.formats.rasi) mkLiteral;
   in{  
-    "*" = {
-      background-color = mkLiteral "#${settings.colors.black}";
-    };
     "window" = {
       width = 700;
       height = 500;
@@ -42,7 +39,6 @@
 
     "case-indicator" = {
       text-font = mkLiteral "inherit";
-      text-color = mkLiteral "inherit";
     };
     
     "entry" = {
