@@ -22,15 +22,17 @@
     brightPurple  = "D3869D"; # base0E - Keywords, Storage, Selector, Markup Italic, Diff Changed
     brightAqua    = "8EC07C"; # base0C - Support, Regular Expressions, Escape Characters, Markup Quotes
     brightGray    = "D5C4A1"; # base05 - fg
+    brightOrange  = "FE8019"; # base09 - Integers, Boolean, Constants, XML Attributes, Markup Link Url
   
     black         = "282828"; # base00 - bg
-    red           = "CC241D"; # base09 - Integers, Boolean, Constants, XML Attributes, Markup Link Url
+    red           = "CC241D"; 
     green         = "98971A";
-    yellow        = "D79921"; # base0F - Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php?>
+    yellow        = "D79921";
     blue          = "458588";
     purple        = "B16286";
     aqua          = "689D6A";
     gray          = "A89984";
+    orange        = "D65D0E"; # base0F - Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php?>
 
     base00 = black; 
     base01 = gray0;
@@ -41,13 +43,13 @@
     base06 = gray4;
     base07 = gray5;
     base08 = brightRed;
-    base09 = red;
+    base09 = brightOrange;
     base0A = brightYellow;
     base0B = brightGreen;
     base0C = brightAqua;
     base0D = brightBlue;
     base0E = brightPurple;
-    base0F = yellow;
+    base0F = orange;
 
   };
   fonts = {
@@ -64,4 +66,5 @@
   terminal = "${pkgs.foot}/bin/foot";
   wallpaper = /etc/nixos/assets/wallpaper.png;
   iconThemeName = "ePapirus-Dark";
+  firefoxProfileName = "6cytz6gt.default-release";
 }

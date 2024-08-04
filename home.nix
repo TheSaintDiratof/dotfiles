@@ -34,8 +34,8 @@ in {
     hyprlock = import ./home/hyprlock.nix { inherit settings; };
     foot = import ./home/foot.nix { inherit settings; };
    
-    tmux = import ./home/tmux.nix {inherit pkgs;};
-    rofi = import ./home/rofi.nix {inherit pkgs config settings;};
+    tmux = import ./home/tmux.nix {inherit pkgs; };
+    rofi = import ./home/rofi.nix {inherit pkgs config settings; };
     firefox.enable = true;
     home-manager.enable = true;
   };

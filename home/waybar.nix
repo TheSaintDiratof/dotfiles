@@ -98,48 +98,23 @@
       transition-property: background-color;
       transition-duration: .5s;
     }
-    .modules-left button:last-child {
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-      margin-right: 5px;
-    }
-    .modules-left button:first-child {
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-      margin-left: 5px;
-    }
-    .modules-left :last-child {
-      border-radius: 0px 5px 5px 0px;
-    }
-    #mpris {
-      border-radius: 5px;
+    #mpris,#pulseaudio,#tray,#idle_inhibitor,#clock,#custom-vpn {
       padding: 0px 5px;
       margin: 0px 5px;
-
+    }
+    #mpris {
       background-color: #${settings.colors.base0F};
       color: #${settings.colors.base00};
     }
     #pulseaudio {
-      padding: 0px 5px;
-      border-radius: 5px;
-      margin: 0px 5px;
-
       background-color: #${settings.colors.base0D};
       color: #${settings.colors.base00};
     }
     #tray {
-      padding: 0px 5px;
-      border-radius: 5px;
-      margin: 0px 5px;
-
       background-color: #${settings.colors.base0D};
       color: #${settings.colors.base00};
     }
     #idle_inhibitor {
-      padding: 0px 5px;
-      border-radius: 5px;
-      margin: 0px 5px;
-
       background-color: #${settings.colors.base07};
       color: #${settings.colors.base00};
     }
@@ -149,18 +124,10 @@
     }
 
     #clock {
-      padding: 0px 5px;
-      border-radius: 5px;
-      margin: 0px 5px;
-
       background-color: #${settings.colors.base0A};
       color: #${settings.colors.base00};
     }
     #custom-vpn {
-      padding: 0px 5px;
-      border-radius: 5px;
-      margin: 0px 5px;
-
       background-color: #${settings.colors.base0F};
       color: #${settings.colors.base00};
     }
