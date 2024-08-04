@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 let
-  settings = import ./settings.nix {inherit pkgs config; };
+  settings = import ./settings.nix {inherit pkgs; };
 in { 
   imports = [ 
     (import ./home/qt/qt.nix {inherit pkgs settings; }) 

@@ -8,6 +8,7 @@ in
       ./hardware-configuration.nix
       ./wireguard.nix
       ./xray.nix
+      ./pipewire.nix
     ];
     # Use the systemd-boot EFI boot loader.
   boot = { 
@@ -84,13 +85,6 @@ in
         enable = true;
         wayland.enable = true;
       };
-    };
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      pulse.enable = true;
-      alsa.support32Bit = true;
-      jack.enable = true;
     };
     dbus.enable = true;
     libinput = {

@@ -1,4 +1,4 @@
-{ pkgs, config }:
+{ pkgs }:
 {
   videoDrivers = [ "amdgpu" ];
   vulkanLoader = [ pkgs.amdvlk ];
