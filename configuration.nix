@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, config, lib, ... }:
 let
   settings = import ./settings.nix { inherit pkgs; };
 in
@@ -33,7 +33,10 @@ in
   time.timeZone = "Asia/Yekaterinburg";
 
 
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n = { 
+    defaultLocale = "en_US.UTF-8";
+    supportedLocales = [ "C.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" "ru_RU.UTF-8/UTF-8" "en_GB.UTF-8/UTF-8" ];
+  };
   console = {
     keyMap = "colemak";
     font = "drdos8x16";
@@ -67,7 +70,7 @@ in
 
       (pkgs.callPackage ./packages/awesfx.nix {})
     ] ++ [ inputs.agenix.packages.${pkgs.system}.default ];
-    shell = "${pkgs.tcsh}/bin/tcsh";
+    #shell = "${pkgs.bash}/bin/bash";
   };
 
   environment.systemPackages = with pkgs; [
@@ -189,5 +192,65 @@ in
       defaultNetwork.settings.dns_enabled = true;
     };
   };
+
+  systemd.services.zapret = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+
+    path = with pkgs; [
+      iptables
+      gawk
+      ipset
+    ];
+
+    serviceConfig = let 
+      zapret = (pkgs.callPackage ./zapret_pkg.nix { inherit lib; } );
+    in {
+      Type = "forking";
+      Restart = "no";
+      TimeoutSec = "30sec";
+      IgnoreSIGPIPE = "no";
+      KillMode = "none";
+      GuessMainPID = "no";
+      RemainAfterExit = "no";
+      ExecStart = "${zapret}/bin/zapret start";
+      ExecStop = "${zapret}/bin/zapret stop";
+
+      EnvironmentFile = pkgs.writeText "zapre-environment" ''
+        MODE=nfqws
+        FWTYPE=iptables
+        DISABLE_IPV6=1
+        NFQWS_OPT_DESYNC="--dpi-desync=split2,fake,disorder --dpi-desync-ttl=10"
+        NFQWS_OPT_DESYNC_HTTP=""
+        NFQWS_OPT_DESYNC_HTTPS=""
+        NFQWS_OPT_DESYNC_HTTP6=""
+        NFQWS_OPT_DESYNC_HTTPS6=""
+        NFQWS_OPT_DESYNC_QUIC="--dpi-desync=fake --dpi-desync-repeats=6"
+        MODE_HTTP=0
+        MODE_HTTPS=1
+        MODE_QUIC=1
+        MODE_FILTER=hostlist
+      '';
+
+      # hardening
+      DevicePolicy = "closed";
+      KeyringMode = "private";
+      PrivateTmp = true;
+      PrivateMounts = true;
+      ProtectHome = true;
+      ProtectHostname = true;
+      ProtectKernelModules = true;
+      ProtectKernelTunables = true;
+      ProtectSystem = "strict";
+      ProtectProc = "invisible";
+      RemoveIPC = true;
+      RestrictNamespaces = true;
+      RestrictRealtime = true;
+      RestrictSUIDSGID = true;
+      SystemCallArchitectures = "native";
+    };
+  };
+
 }
 

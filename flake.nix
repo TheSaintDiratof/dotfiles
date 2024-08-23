@@ -21,7 +21,7 @@
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules = [ 
       	nixvim.homeManagerModules.nixvim 
-	      ./home.nix 
+	      ./home 
       ];
     };
     nixosConfigurations."4eJIoBe4HoCTb" = nixpkgs.lib.nixosSystem {
