@@ -31,7 +31,7 @@ in {
     pointerCursor = {
       name = "Vimix-cursors";
       package = pkgs.vimix-cursors;
-      size = 19;
+      size = 14;
       x11.enable = true;
       gtk.enable = true;
     };

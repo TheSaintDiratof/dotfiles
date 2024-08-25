@@ -10,7 +10,6 @@
       termbin = "nc termbin.com 9999";
       cal = "cal -m";
       cputemp = "cat /sys/devices/platform/coretemp.0/hwmon/hwmon1/temp1_input | cut -b -2";
-      bat = "cat /sys/class/power_supply/BAT{0,1}/capacity";
       dict = "sdcv -2 ~/.local/dict/useful";
       phrasebook = "sdcv -2 ~/.local/dict/phrasebook";
     };

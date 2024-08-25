@@ -7,7 +7,7 @@
       env = [
         "QT_QPA_PLATFORMTHEME,qt5ct "
       ];
-      monitor = "eDP-1,1920x1080@60.00,0x0,1.5";
+      monitor = "HDMI-A-1,1920x1080@60.00,0x0,1.0";
       general = {
         gaps_in = 5;
         gaps_out = 5;
@@ -33,14 +33,6 @@
         shadow_render_power = 4;
         rounding = 0;
       };
-      device = [
-        { name = "tpps/2-ibm-trackpoint";
-          sensitivity = 0.3;
-        }
-        { name = "synaptics-tm3276-022";
-          sensitivity = 0.0;
-        }
-      ];
       input = {
         kb_model = "";
         kb_layout = "us, ru";
@@ -49,7 +41,6 @@
         repeat_rate = 25;
         repeat_delay = 600;
         sensitivity = -0.5;
-
         accel_profile = "flat";
         follow_mouse = 1;
         mouse_refocus = true;
@@ -103,9 +94,7 @@
         "$mod, F6, exec, ${pkgs.playerctl}/bin/playerctl previous"
         "$mod, F7, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
         "$mod, F8, exec, ${pkgs.playerctl}/bin/playerctl next"
-        ",print, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
-        ",XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 1%-"
-        ",XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 1%+"
+        ",Menu, exec, ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
 
         "$mod, L, exec, ${lock}"
 

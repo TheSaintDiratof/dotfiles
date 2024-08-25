@@ -9,7 +9,6 @@ in
       ./wireguard.nix
       ./xray.nix
       ./pipewire.nix
-      ./dns.nix
     ];
     # Use the systemd-boot EFI boot loader.
   boot = { 
@@ -20,13 +19,15 @@ in
     };
     kernelPackages = pkgs.linuxKernel.packages.linux_rt_5_15; 
     supportedFilesystems = [ "zfs" ];
+    zfs.extraPools = [ "pool0" ];
     binfmt.emulatedSystems = [ "aarch64-linux" "armv7l-linux" ];
   };
 
   networking = {
-    hostName = "MbIcJIuTeJIb"; # Define your hostname.
-    hostId = "b9728200";
-	  networkmanager.enable = true;
+    hostName = "4eJIoBe4HoCTb"; # Define your hostname.
+    hostId = "b97281ff";
+    nameservers = [ "1.1.1.1" "8.8.8.8" ];
+    dhcpcd.wait = "background";
   };
 
   time.timeZone = "Asia/Yekaterinburg";
@@ -43,7 +44,7 @@ in
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.diratof = {
     isNormalUser = true;
-    extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" "tty" "networkmanager" ];     
+    extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" "tty" ];     
     packages = with pkgs; [
       tmux
       bc
@@ -70,7 +71,6 @@ in
       (pkgs.callPackage ./packages/awesfx.nix {})
     ] ++ [ inputs.agenix.packages.${pkgs.system}.default ];
     #shell = "${pkgs.bash}/bin/bash";
-    useDefaultShell = true;
   };
 
   environment.systemPackages = with pkgs; [
