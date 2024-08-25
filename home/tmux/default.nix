@@ -10,7 +10,7 @@
     prefix = "C-q";
     terminal = "tmux-256color";
     baseIndex = 1;
-    #shell = ''${pkgs.bash}/bin/bash -l'';
+    #shell = ''${pkgs.bashInteractive}/bin/bash'';
     extraConfig = ''
       bind e split -hc "#{pane_current_path}"
       bind s split -c "#{pane_current_path}"

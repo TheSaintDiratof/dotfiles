@@ -5,7 +5,7 @@
     settings = {
       ipc = "off";
       preload = "${settings.wallpaper}";
-      wallpaper = "HDMI-A-1, ${settings.wallpaper}";
+      wallpaper = "eDP-1, ${settings.wallpaper}";
     };
   };
 }

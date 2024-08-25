@@ -7,19 +7,25 @@
       mainBar = {
         layer = "top";
         position = "top";
-        output = [ "HDMI-A-1" ];
+        output = [ "eDP-1" ];
         height = 28;
-        modules-left = [ "mpris" ];
+        modules-left = [ "hyprland/workspaces" "mpris" ];
         modules-center = [ ];
-        modules-right = [ "custom/vpn" "pulseaudio" "tray" "idle_inhibitor" "clock" ];
+        modules-right = [ "custom/bat" "custom/vpn" "pulseaudio" "tray" "idle_inhibitor" "clock" ];
+        "hyprland/workspaces" = {
+          format = "{icon}";
+          on-click = "activate";
+          persistent-workspaces = (builtins.listToAttrs 
+          (builtins.map (x: { name = "${x}"; value = [];})
+          [ "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" ]));
+          format-icons = {
+            "1" = "I"; "2" = "II"; "3" = "III"; "4" = "IV"; "5" = "V"; "6" = "VI"; "7" = "VII"; "8" = "VIII"; "9" = "IX"; "10" = "X"; 
+          };
+        };
         "mpris" = {
           format = "<b>{player} {status_icon}</b> {artist} <b>—</b> {title}";
           on-right-click = "shift";
-          status_icons = {
-            paused = "";
-            default = "";
-          };
-          max-length = 100;
+          max-length = 60;
         };
         "idle_inhibitor" = {
           format = "{icon}";
@@ -60,8 +66,8 @@
           };
           on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
         };
-        "custom/vpn" = 
-          let vpn = pkgs.writeShellScriptBin "vpn.sh" ''
+        "custom/vpn" = let 
+          vpn = pkgs.writeShellScriptBin "vpn.sh" ''
             while [[ $# -gt 0 ]]; do
               case $1 in -t|--toggle)
                 if ${pkgs.iproute2}/bin/ip l | ${pkgs.gnugrep}/bin/grep wg0 > /dev/null; then
@@ -75,15 +81,25 @@
               esac
             done
             if ${pkgs.iproute2}/bin/ip l | ${pkgs.gnugrep}/bin/grep wg0 > /dev/null;  then
-              echo "VPN Activated"
+              echo "VPN A"
             else
-              echo "VPN Deactivated"
+              echo "VPN D"
             fi
           '';
-          in { 
-            exec = "${vpn}/bin/vpn.sh";
-            on-click = "${vpn}/bin/vpn.sh -t";
-            interval = 1;
+        in { 
+          exec = "${vpn}/bin/vpn.sh";
+          on-click = "${vpn}/bin/vpn.sh -t";
+          interval = 1;
+        };
+        "custom/bat" = let 
+          bat = pkgs.writeShellScriptBin "bat.sh" ''
+            BAT0=$(cat /sys/class/power_supply/BAT0/capacity)
+            BAT1=$(cat /sys/class/power_supply/BAT1/capacity)
+            echo B0: $BAT0 B1: $BAT1
+          '';
+        in {
+          exec = "${bat}/bin/bat.sh";
+          interval = 5;
         };
       };
     };
@@ -103,13 +119,13 @@
         transition-property: background-color;
         transition-duration: .5s;
       }
-      #mpris,#pulseaudio,#tray,#idle_inhibitor,#clock,#custom-vpn {
+      #mpris,#pulseaudio,#tray,#idle_inhibitor,#clock,#custom-vpn,#custom-bat {
         padding: 0px 5px;
         margin: 0px 5px;
         color: #${settings.colors.base00};
       }
       #mpris {
-        background-color:         #${settings.colors.base0F};
+        background-color:         #${settings.colors.base0D};
       }
       #pulseaudio {
         background-color:         #${settings.colors.base0D};
@@ -127,8 +143,23 @@
       #clock {
         background-color:         #${settings.colors.base0A};
       }
-      #custom-vpn {
+      #custom-vpn,#custom-bat {
         background-color:         #${settings.colors.base0F};
+      }
+      #workspaces button {
+        background-color:         #${settings.colors.base00};
+        margin: 0px;
+        padding: 0px;
+      }
+      #workspaces button.empty {
+        color:                    #${settings.colors.base02};
+      }
+      #workspaces button.active {
+        color:                    #${settings.colors.base0A};
+        border-bottom:  2px solid #${settings.colors.base0A};
+      }
+      #workspaces button:hover {
+        background-color:         #${settings.colors.base01};
       }
     '';
   };
