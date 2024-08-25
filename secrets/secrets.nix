@@ -1,6 +1,6 @@
 let
-  diratof = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAvH1xWOQzQCWiIe37acPLM6AjpSvp5Po/B8WJfsoa/y";
-  root = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICEAuihATqvNTW+6lsF4uTo0/6nK75yefek8t+FzqLt2";
+  diratof = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL3Em1t4H64VO48MCsR7R/nNHjhiipOYDl2zwwuyMqEN diratof@MbIcJIuTeJIb";
+  root = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP5CnCRb6XWDC96m9ZrY+smK4ICLhFB1okV+ijxA9jVw root@MbIcJIuTeJIb";
   systems = [ root diratof ];
 in {
   "xray.age".publicKeys = systems;

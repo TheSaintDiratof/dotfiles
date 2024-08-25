@@ -24,7 +24,7 @@
 	      ./home 
       ];
     };
-    nixosConfigurations."4eJIoBe4HoCTb" = nixpkgs.lib.nixosSystem {
+    nixosConfigurations."MbIcJIuTeJIb" = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./configuration.nix
