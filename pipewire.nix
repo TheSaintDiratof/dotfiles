@@ -39,6 +39,12 @@
         }
         ]
       '')
+      #(pkgs.writeTextDir "share/pipewire/pipewire.conf.d/78-quant.conf" ''
+      #  context.propetries = {
+      #    
+      #  }
+      #'')
+
     ];
   };
 }

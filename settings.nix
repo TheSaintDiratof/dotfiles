@@ -1,9 +1,5 @@
 { pkgs }:
 {
-  videoDrivers = [ "amdgpu" ];
-  vulkanLoader = [ pkgs.amdvlk ];
-  vulkanLoader32 = [ pkgs.driversi686Linux.amdvlk ];
-
   colors =  rec {
     gray0         = "3C3836"; # base01 - light bg
     gray1         = "504945"; # base02 - sel bg

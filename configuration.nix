@@ -1,7 +1,4 @@
-{ pkgs, inputs, config, lib, ... }:
-let
-  settings = import ./settings.nix { inherit pkgs; };
-in
+{ pkgs, inputs, nixpkgs-unstable, ... }:
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -29,7 +26,7 @@ in
 	  networkmanager.enable = true;
   };
 
-  time.timeZone = "Asia/Yekaterinburg";
+  time.timeZone = "Europe/Moscow";
 
 
   i18n = { 
@@ -46,7 +43,7 @@ in
     extraGroups = [ "dialout" "wheel" "audio" "video" "input" "pipewire" "tty" "networkmanager" ];     
     packages = with pkgs; [
       tmux
-      bc
+      libqalculate
       cmus
       xonotic
       qemu
@@ -58,16 +55,17 @@ in
       yt-dlp android-tools
       sdcv
 
-      yacreader
-      swayimg feh krita
+      yacreader mcomix
+      nomacs krita
       zathura
       mpv
       calibre
       musescore
-
+      nix-index
       telegram-desktop
-
+      
       (pkgs.callPackage ./packages/awesfx.nix {})
+      #(nixpkgs-unstable.packages.materialgram)
     ] ++ [ inputs.agenix.packages.${pkgs.system}.default ];
     #shell = "${pkgs.bash}/bin/bash";
     useDefaultShell = true;
@@ -82,6 +80,12 @@ in
   ];
   security.rtkit.enable = true;
   services = {
+    undervolt = {
+      enable = true;
+      coreOffset = -70;
+      uncoreOffset = -70;
+      gpuOffset = -70;
+    };
     displayManager = {
       enable = true;
       sddm = {
@@ -101,7 +105,6 @@ in
         variant = "colemak,";
         options = "grp:win_space_toggle";
       };
-      videoDrivers = settings.videoDrivers;
     };
     printing = {
       enable = true;
@@ -157,8 +160,6 @@ in
     opengl = {
       driSupport = true;
       driSupport32Bit = true;
-      extraPackages = settings.vulkanLoader;
-      extraPackages32 = settings.vulkanLoader32;
     };
     bluetooth.enable = true;
     pulseaudio.enable = false;
@@ -185,7 +186,7 @@ in
     sandbox = true;
     experimental-features = [ "nix-command" "flakes" ];
   };
-  zramSwap.enable = true;
+  #zramSwap.enable = true;
   virtualisation = {
     podman = {
       enable = true;
@@ -193,64 +194,66 @@ in
     };
   };
 
-  systemd.services.zapret = {
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-    wantedBy = [ "multi-user.target" ];
+  #systemd.services.zapret = {
+  #  after = [ "network-online.target" ];
+  #  wants = [ "network-online.target" ];
+  #  wantedBy = [ "multi-user.target" ];
 
-    path = with pkgs; [
-      iptables
-      gawk
-      ipset
-    ];
+  #  path = with pkgs; [
+  #    iptables
+  #    gawk
+  #    ipset
+  #  ];
 
-    serviceConfig = let 
-      zapret = (pkgs.callPackage ./zapret_pkg.nix { inherit lib; } );
-    in {
-      Type = "forking";
-      Restart = "no";
-      TimeoutSec = "30sec";
-      IgnoreSIGPIPE = "no";
-      KillMode = "none";
-      GuessMainPID = "no";
-      RemainAfterExit = "no";
-      ExecStart = "${zapret}/bin/zapret start";
-      ExecStop = "${zapret}/bin/zapret stop";
+  #  serviceConfig = let 
+  #    zapret = (pkgs.callPackage ./zapret_pkg.nix { inherit lib; } );
+  #  in {
+  #    Type = "forking";
+  #    Restart = "no";
+  #    TimeoutSec = "30sec";
+  #    IgnoreSIGPIPE = "no";
+  #    KillMode = "none";
+  #    GuessMainPID = "no";
+  #    RemainAfterExit = "yes";
+  #    ExecStart = "${zapret}/bin/zapret start";
+  #    ExecStartPost = "${zapret}/bin/zapret start-fw";
+  #    ExecStop = "${zapret}/bin/zapret stop";
+  #    ExecStopPost = "${zapret}/bin/zapret stop-fw";
 
-      EnvironmentFile = pkgs.writeText "zapre-environment" ''
-        MODE=nfqws
-        FWTYPE=iptables
-        DISABLE_IPV6=1
-        NFQWS_OPT_DESYNC="--dpi-desync=split2,fake,disorder --dpi-desync-ttl=10"
-        NFQWS_OPT_DESYNC_HTTP=""
-        NFQWS_OPT_DESYNC_HTTPS=""
-        NFQWS_OPT_DESYNC_HTTP6=""
-        NFQWS_OPT_DESYNC_HTTPS6=""
-        NFQWS_OPT_DESYNC_QUIC="--dpi-desync=fake --dpi-desync-repeats=6"
-        MODE_HTTP=0
-        MODE_HTTPS=1
-        MODE_QUIC=1
-        MODE_FILTER=hostlist
-      '';
+  #    EnvironmentFile = pkgs.writeText "zapret-environment" ''
+  #      MODE=tpws
+  #      FWTYPE=iptables
+  #      DISABLE_IPV6=1
+  #      NFQWS_OPT_DESYNC="--dpi-desync=split2,fake,disorder --dpi-desync-ttl=10"
+  #      NFQWS_OPT_DESYNC_HTTP=""
+  #      NFQWS_OPT_DESYNC_HTTPS=""
+  #      NFQWS_OPT_DESYNC_HTTP6=""
+  #      NFQWS_OPT_DESYNC_HTTPS6=""
+  #      NFQWS_OPT_DESYNC_QUIC="--dpi-desync=fake --dpi-desync-repeats=6"
+  #      MODE_HTTP=1
+  #      MODE_HTTPS=1
+  #      MODE_QUIC=1
+  #      MODE_FILTER=hostlist
+  #    '';
 
-      # hardening
-      DevicePolicy = "closed";
-      KeyringMode = "private";
-      PrivateTmp = true;
-      PrivateMounts = true;
-      ProtectHome = true;
-      ProtectHostname = true;
-      ProtectKernelModules = true;
-      ProtectKernelTunables = true;
-      ProtectSystem = "strict";
-      ProtectProc = "invisible";
-      RemoveIPC = true;
-      RestrictNamespaces = true;
-      RestrictRealtime = true;
-      RestrictSUIDSGID = true;
-      SystemCallArchitectures = "native";
-    };
-  };
+  #    # hardening
+  #    DevicePolicy = "closed";
+  #    KeyringMode = "private";
+  #    PrivateTmp = true;
+  #    PrivateMounts = true;
+  #    ProtectHome = true;
+  #    ProtectHostname = true;
+  #    ProtectKernelModules = true;
+  #    ProtectKernelTunables = true;
+  #    ProtectSystem = "strict";
+  #    ProtectProc = "invisible";
+  #    RemoveIPC = true;
+  #    RestrictNamespaces = true;
+  #    RestrictRealtime = true;
+  #    RestrictSUIDSGID = true;
+  #    SystemCallArchitectures = "native";
+  #  };
+  #};
 
 }
 

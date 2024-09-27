@@ -23,6 +23,7 @@
       windowrulev2 = [
         #"immediate, class:^(cs2)$"
         "float, class:(org.telegram.desktop), title:(Media viewer)"
+        "float, class:(gamescope)"
         "size 1908 1039, class:(org.telegram.desktop), title:(Media viewer)"
         "move 6 36, class:(org.telegram.desktop), title:(Media viewer)"
         "workspace 6, class:(steam), title:(Steam)"
@@ -35,7 +36,7 @@
       };
       device = [
         { name = "tpps/2-ibm-trackpoint";
-          sensitivity = 0.3;
+          sensitivity = 0.5;
         }
         { name = "synaptics-tm3276-022";
           sensitivity = 0.0;

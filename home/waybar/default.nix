@@ -23,9 +23,9 @@
           };
         };
         "mpris" = {
-          format = "<b>{player} {status_icon}</b> {artist} <b>—</b> {title}";
+          format = "<b>{status_icon}</b> {artist} <b>—</b> {title}";
           on-right-click = "shift";
-          max-length = 60;
+          max-length = 90;
         };
         "idle_inhibitor" = {
           format = "{icon}";
@@ -56,14 +56,10 @@
         };
     
         "pulseaudio" = {
-          format = "O:{volume}% {format_source}";
-          format-muted = "O:0% {format_source}";
-          format-source = "S:{volume}%";
-          format-source-muted = "S:0%";
-          format-icons = {
-            headphone = "";
-            default = ["" "" ""];
-          };
+          format = "{volume} {format_source}";
+          format-muted = "0 {format_source}";
+          format-source = "{volume}";
+          format-source-muted = "0";
           on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
         };
         "custom/vpn" = let 
@@ -95,7 +91,7 @@
           bat = pkgs.writeShellScriptBin "bat.sh" ''
             BAT0=$(cat /sys/class/power_supply/BAT0/capacity)
             BAT1=$(cat /sys/class/power_supply/BAT1/capacity)
-            echo B0: $BAT0 B1: $BAT1
+            echo $BAT0 $BAT1
           '';
         in {
           exec = "${bat}/bin/bat.sh";

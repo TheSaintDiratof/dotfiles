@@ -3,6 +3,9 @@
     nixpkgs = { 
       url = "github:nixos/nixpkgs/nixos-24.05"; 
     };
+    nixpkgs-unstable = { 
+      url = "github:nixos/nixpkgs/nixos-unstable"; 
+    };
     agenix = { 
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -16,7 +19,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = inputs@{ nixpkgs, home-manager, agenix, nixvim, ... }: {
+  outputs = inputs@{ nixpkgs, nixpkgs-unstable, home-manager, agenix, nixvim, ... }: {
     homeConfigurations."diratof" = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules = [ 
