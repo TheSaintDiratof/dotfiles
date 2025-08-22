@@ -8,7 +8,6 @@
   libnetfilter_queue,
   libnfnetlink,
 
-  iptables,
   nftables,
   gawk
 }:
@@ -25,7 +24,7 @@ stdenv.mkDerivation {
   };
 
   buildInputs = [ libcap zlib libnetfilter_queue libnfnetlink ];
-  nativeBuildInputs = [ iptables nftables gawk ];
+  nativeBuildInputs = [ nftables gawk ];
 
   buildPhase = ''
     mkdir -p $out/bin

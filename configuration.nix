@@ -1,4 +1,4 @@
-{ pkgs, inputs, config, lib, ... }:
+{ pkgs, inputs, ch341prog, ... }:
 let
   settings = import ./settings.nix { inherit pkgs; };
 in
@@ -9,6 +9,7 @@ in
       ./wireguard.nix
       ./xray.nix
       ./pipewire.nix
+      ./dns.nix
     ];
     # Use the systemd-boot EFI boot loader.
   boot = { 
@@ -26,8 +27,13 @@ in
   networking = {
     hostName = "4eJIoBe4HoCTb"; # Define your hostname.
     hostId = "b97281ff";
-    nameservers = [ "1.1.1.1" "8.8.8.8" ];
     dhcpcd.wait = "background";
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 7777 ];
+      allowedUDPPorts = [ 7777 ];
+    };
+    #nftables.enable = true;
   };
 
   time.timeZone = "Asia/Yekaterinburg";
@@ -49,8 +55,8 @@ in
       tmux
       bc
       cmus
-      xonotic
-      qemu
+      #xonotic
+      #qemu
       # desktop
       pavucontrol
       qbittorrent
@@ -59,15 +65,18 @@ in
       yt-dlp android-tools
       sdcv
 
-      yacreader
-      swayimg feh krita
+      yacreader nomacs
+      swayimg feh krita gimp3-with-plugins
+      gamescope
       zathura
       mpv
       calibre
       musescore
 
-      telegram-desktop
-
+      #telegram-desktop
+      materialgram
+      wl-clipboard
+      #(ch341prog.packages."x86_64-linux".default)
       (pkgs.callPackage ./packages/awesfx.nix {})
     ] ++ [ inputs.agenix.packages.${pkgs.system}.default ];
     #shell = "${pkgs.bash}/bin/bash";
@@ -82,12 +91,12 @@ in
   ];
   security.rtkit.enable = true;
   services = {
-    displayManager = {
+    zerotierone = {
       enable = true;
-      sddm = {
-        enable = true;
-        wayland.enable = true;
-      };
+      joinNetworks = [ 
+        #"88503383902e5133" 
+        "db64858fed5d7948" 
+      ];
     };
     dbus.enable = true;
     libinput = {
@@ -102,11 +111,16 @@ in
         options = "grp:win_space_toggle";
       };
       videoDrivers = settings.videoDrivers;
+      displayManager.gdm = {
+          enable = true;
+          wayland = true;
+      };
     };
     printing = {
       enable = true;
       drivers = [ pkgs.hplipWithPlugin ];
     };
+    atftpd.enable = true; #todelete; oneshot action
     udev.extraRules = ''
       SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="3748", \
         MODE:="0666", \
@@ -136,7 +150,12 @@ in
   }; 
   programs = {
     hyprland = {
+      enable = false;
+      xwayland.enable = true;
+    };
+    sway = {
       enable = true;
+      wrapperFeatures.gtk = true;
       xwayland.enable = true;
     };
     steam.enable = true;
@@ -154,25 +173,25 @@ in
     sudo.enable = false;
   };
   hardware = {
-    opengl = {
-      driSupport = true;
-      driSupport32Bit = true;
-      extraPackages = settings.vulkanLoader;
-      extraPackages32 = settings.vulkanLoader32;
+    amdgpu.amdvlk.enable = true;
+    amdgpu.amdvlk.support32Bit.enable = true;
+    graphics = {
+      enable = true;
+      enable32Bit = true;
     };
     bluetooth.enable = true;
-    pulseaudio.enable = false;
+    #pulseaudio.enable = false;
   };
   fonts = {
     packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk
+      noto-fonts-cjk-sans
       noto-fonts-emoji
       corefonts
       terminus_font
       comfortaa
       kbd
-      (nerdfonts.override { fonts = [ "InconsolataGo" "FiraCode" "DroidSansMono" "Terminus" ]; })
+      #(nerdfonts.override { fonts = [ "InconsolataGo" "FiraCode" "DroidSansMono" "Terminus" ]; })
     ];
     fontconfig.antialias = false;
   };
@@ -192,65 +211,5 @@ in
       defaultNetwork.settings.dns_enabled = true;
     };
   };
-
-  systemd.services.zapret = {
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-    wantedBy = [ "multi-user.target" ];
-
-    path = with pkgs; [
-      iptables
-      gawk
-      ipset
-    ];
-
-    serviceConfig = let 
-      zapret = (pkgs.callPackage ./zapret_pkg.nix { inherit lib; } );
-    in {
-      Type = "forking";
-      Restart = "no";
-      TimeoutSec = "30sec";
-      IgnoreSIGPIPE = "no";
-      KillMode = "none";
-      GuessMainPID = "no";
-      RemainAfterExit = "no";
-      ExecStart = "${zapret}/bin/zapret start";
-      ExecStop = "${zapret}/bin/zapret stop";
-
-      EnvironmentFile = pkgs.writeText "zapre-environment" ''
-        MODE=nfqws
-        FWTYPE=iptables
-        DISABLE_IPV6=1
-        NFQWS_OPT_DESYNC="--dpi-desync=split2,fake,disorder --dpi-desync-ttl=10"
-        NFQWS_OPT_DESYNC_HTTP=""
-        NFQWS_OPT_DESYNC_HTTPS=""
-        NFQWS_OPT_DESYNC_HTTP6=""
-        NFQWS_OPT_DESYNC_HTTPS6=""
-        NFQWS_OPT_DESYNC_QUIC="--dpi-desync=fake --dpi-desync-repeats=6"
-        MODE_HTTP=0
-        MODE_HTTPS=1
-        MODE_QUIC=1
-        MODE_FILTER=hostlist
-      '';
-
-      # hardening
-      DevicePolicy = "closed";
-      KeyringMode = "private";
-      PrivateTmp = true;
-      PrivateMounts = true;
-      ProtectHome = true;
-      ProtectHostname = true;
-      ProtectKernelModules = true;
-      ProtectKernelTunables = true;
-      ProtectSystem = "strict";
-      ProtectProc = "invisible";
-      RemoveIPC = true;
-      RestrictNamespaces = true;
-      RestrictRealtime = true;
-      RestrictSUIDSGID = true;
-      SystemCallArchitectures = "native";
-    };
-  };
-
 }
 

@@ -3,15 +3,60 @@
   programs.waybar = {
     enable = true;
     systemd.enable = false;
-    settings = { 
+    settings = {
+      secondBar = {
+        output = [ "DVI-D-1" ];
+        modules-left = [ "sway/workspaces" ];
+        modules-right = [ "clock" ];
+        height = 28;
+        "sway/workspaces" = {
+          format = "{icon}";
+          on-click = "activate";
+          sort-by-number = true;
+          persistent-workspaces = (builtins.listToAttrs 
+            (builtins.map (x: { name = "0${x}"; value = [];}) 
+            [ "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"]));
+          format-icons = {
+            "01" = "I"; "02" = "II"; "03" = "III"; "04" = "IV"; "05" = "V"; "06" = "VI"; "07" = "VII"; "08" = "VIII"; "09" = "IX"; "010" = "X";
+          };
+        };
+        "clock" = {
+          locale = "en_GB.UTF-8";
+          format = "{:%a, %d/%m/%y %H:%M:%S}";
+          tooltip-format = "<tt><small>{calendar}</small></tt>";
+          calendar = {
+            weeks-pos = "right";
+            format = {
+              today = "<span color='#${settings.colors.base07}'><b><u>{}</u></b></span>";
+              weekdays = "<span color='#${settings.colors.base0F}'><b>{}</b></span>";
+              days = "<span color='#${settings.colors.base01}'><b>{}</b></span>";
+              weeks = "<span color='#${settings.colors.base0C}'><b>W{}</b></span>";
+              months = "<span color='#${settings.colors.base09}'><b>{}</b></span>";
+            };
+            on-scroll = 1;
+          };
+          interval = 1;
+        };
+      };
       mainBar = {
         layer = "top";
         position = "top";
         output = [ "HDMI-A-1" ];
         height = 28;
-        modules-left = [ "mpris" ];
-        modules-center = [ ];
+        modules-left = [ "sway/workspaces" ];
+        modules-center = [ "mpris" ];
         modules-right = [ "custom/vpn" "pulseaudio" "tray" "idle_inhibitor" "clock" ];
+        "sway/workspaces" = {
+          format = "{icon}";
+          on-click = "activate";
+          sort-by-number = true;
+          persistent-workspaces = (builtins.listToAttrs 
+            (builtins.map (x: { name = "${x}"; value = [];}) 
+            [ "1" "2" "3" "4" "5" "6" "7" "8" "9" "10"]));
+          format-icons = {
+            "1" = "I"; "2" = "II"; "3" = "III"; "4" = "IV"; "5" = "V"; "6" = "VI"; "7" = "VII"; "8" = "VIII"; "9" = "IX"; "10" = "X";
+          };
+        };
         "mpris" = {
           format = "<b>{player} {status_icon}</b> {artist} <b>—</b> {title}";
           on-right-click = "shift";
@@ -91,8 +136,8 @@
         border: 1px solid transparent;
         border-radius: 0px;
         margin: 0px 0px;
-        font-family: Terminus;
-        font-size: 14px;
+        font-family: ${settings.fonts.bar.font};
+        font-size: ${settings.fonts.bar.size};
         font-weight: bold;
         min-height: 0px;
       }
@@ -129,6 +174,21 @@
       }
       #custom-vpn {
         background-color:         #${settings.colors.base0F};
+      }
+      #workspaces button {
+        background-color:         #${settings.colors.base00};
+        margin: 0px;
+        padding: 0px;
+      }
+      #workspaces button.empty {
+        color:                    #${settings.colors.base02};
+      }
+      #workspaces button.focused {
+        color:                    #${settings.colors.base0A};
+        border-bottom:  2px solid #${settings.colors.base0A};
+      }
+      #workspaces button:hover {
+        background-color:         #${settings.colors.base01};
       }
     '';
   };

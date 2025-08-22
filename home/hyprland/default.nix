@@ -30,14 +30,14 @@
         "float, class:(org.qbittorrent.qBittorrent), title:(^((?!qBittorrent v4\.6\.4).)*$)"
       ];
       decoration = {
-        shadow_render_power = 4;
+        #shadow_render_power = 4;
         rounding = 0;
       };
       input = {
         kb_model = "";
         kb_layout = "us, ru";
         kb_variant = "colemak, ";
-        kb_options = "grp:win_space_toggle";
+        kb_options = "grp:caps_toggle,grp_led:caps";
         repeat_rate = 25;
         repeat_delay = 600;
         sensitivity = -0.5;
@@ -134,7 +134,7 @@
         "$mod SHIFT, 0, movetoworkspace, 10"
 
         "$mod, g, fullscreen"
-        "$mod SHIFT, g, fakefullscreen"
+        #"$mod SHIFT, g, fakefullscreen"
         "$mod SHIFT, x, togglefloating"
         "$mod, p, pseudo,"
         "$mod, f, togglesplit,"
@@ -166,8 +166,8 @@
       group:col.border_inactive = "0xFF${settings.colors.base03}";
       group:col.border_active = "0xFF${settings.colors.base0D}";
       group:col.border_locked_active = "0xFF${settings.colors.base0C}";
-      #groupbar:col.active = "0xFF${settings.colors.base0D}";
-      #groupbar:col.inactive = "0xFF${settings.colors.base03}";
+      #group:groupbar:col.active = "rgb(${settings.colors.base00}) rgb(${settings.colors.base00}) 45deg";
+      #group:groupbar:col.inactive = "0xFF${settings.colors.base00}";
       #decoration:col.shadow = "0xEE${settings.colors.base00}"
     '';
   };

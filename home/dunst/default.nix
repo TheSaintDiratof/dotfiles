@@ -1,9 +1,10 @@
 { settings }: 
 {
   services.dunst = {
-  enable = true;
+    enable = true;
     settings = {
       global = {
+        monitor = "1";
         width = 400;
         height = 200;
         offset = "30x50";

@@ -14,8 +14,8 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "tiwai";
     repo = "awesfx";
-    rev = "tags/v0.5.2";
-    hash = "sha256-cEp2EThMyYPE1j9woeGJAfQ0poASEBE99MlHw85aGMI=";
+    rev = "master";
+    hash = "sha256-pWkPeXGJ5AZN2ZWX34vqcVJsFFMj4NhVJMNg/tuzNpw=";
   };
 
   strictDeps = true;

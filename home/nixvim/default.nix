@@ -1,8 +1,34 @@
-{ settings }:
+{ settings, pkgs}:
 {
   programs.nixvim = {
     enable = true;
-    
+    extraConfigLua = ''
+      function GoToDefinitionInTab()
+        local params = vim.lsp.util.make_position_params()
+        vim.lsp.buf_request(0, "textDocument/definition", params, function(err, result, ctx, _)
+          if err then
+            vim.notify("Error fetching definition: " .. err.message, vim.log.levels.ERROR)
+            return
+          end
+          if not result or vim.tbl_isempty(result) then
+            vim.notify("No definition found", vim.log.levels.INFO)
+            return
+          end
+          local location = result[1]
+          if location.uri then
+            local bufnr = vim.uri_to_bufnr(location.uri)
+            if not vim.api.nvim_buf_is_loaded(bufnr) then
+                vim.fn.tabnew() -- Open a new tab
+                vim.api.nvim_win_set_buf(0, bufnr) -- Set the buffer in the new tab
+            else
+                vim.cmd("tabedit " .. vim.uri_to_fname(location.uri)) -- Open in a new tab
+            end
+            vim.api.nvim_win_set_cursor(0, { location.range.start.line + 1, location.range.start.character })
+          end
+        end)
+      end
+    '';
+
     keymaps = [
       { key = "<Space>1"; action = "1gt"; }
       { key = "<Space>2"; action = "2gt"; }
@@ -19,6 +45,7 @@
       { key = "е"; action = "y"; }
       { key = "ю"; action = "v"; }
       { key = "<F5>"; action = "!./.build.sh"; }
+      { key ="<Space>p"; action = "lua GoToDefinitionInTab()"; }
     ];
     opts = {
       number = true;
@@ -29,7 +56,6 @@
       smartindent = true;
       expandtab = true;
     };
-
 
     files = {
       "ftplugin/json.lua".opts = {
@@ -71,12 +97,15 @@
       };
       lsp = {
         enable = true;
-
         servers = {
           clangd.enable = true;
-          tsserver.enable = true;
-
-          nil-ls = {
+          ts_ls.enable = true;
+          matlab_ls = {
+            enable = true;
+            cmd = [ "${pkgs.matlab-language-server}/bin/matlab-language-server" "--stdio" ];
+            filetypes = [ "m" ];
+          };
+          nil_ls = {
             enable = true;
             settings = {
               formatting.command = [ "nixpkgs-fmt" ];
@@ -86,13 +115,15 @@
       };
 
       neo-tree.enable = true;
+      neo-tree.filesystem.cwdTarget.sidebar = "left";
       nix.enable = true;
       nvim-autopairs.enable = true;
+      web-devicons.enable = true;
 
       treesitter = {
         enable = true;
         nixvimInjections = true;
-        indent = true;
+        settings.indent.enable = true;
       };
     };
     colorschemes.base16 = {

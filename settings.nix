@@ -54,9 +54,13 @@
   };
   fonts = {
     lock = "Terminus";
-    terminal = "Terminus:size=12";
-    launcher = "Terminus 12";
+    terminal = "Terminus:size=14";
+    launcher = "Terminus 14";
     notification = "Terminus 14";
+    bar = {
+      font = "Terminus";
+      size = "14px";
+    };
     gtk = {
       package = pkgs.dejavu_fonts;
       name = "DeJavu Sans";
@@ -64,7 +68,7 @@
     };
   };
   terminal = "${pkgs.foot}/bin/foot";
-  wallpaper = /etc/nixos/assets/wallpaper.png;
+  wallpaper = ./assets/flowers.png;
   iconThemeName = "ePapirus-Dark";
   firefoxProfileName = "6cytz6gt.default-release";
 }

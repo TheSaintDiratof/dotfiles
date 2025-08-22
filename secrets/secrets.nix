@@ -5,4 +5,5 @@ let
 in {
   "xray.age".publicKeys = systems;
   "wireguard.age".publicKeys = systems;
+  "wgTV.age".publicKeys = systems;
 }
